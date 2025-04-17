@@ -16,5 +16,9 @@ tableextension 50008 "SBA User Setup" extends "User Setup"
         {
             Caption = 'Open PO';
         }
+        field(50003; "Open Exported PO"; Boolean)
+        {
+            Caption = 'Open Exported PO';
+        }
     }
 }

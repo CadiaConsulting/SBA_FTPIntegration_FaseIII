@@ -796,6 +796,29 @@ codeunit 50013 "Integration Purchase"
                     end;
                 end;
             end;
+
+            if (FromPurchaseHeader."CADBR Fiscal Document Type" = 'NFSE') and (FromPurchaseHeader."CADBR Service Delivery City" = '') then begin
+
+                IntegrationPurchase.Reset();
+                IntegrationPurchase.SetRange("Document No.", PurchaseHeader."No.");
+                if IntegrationPurchase.FindFirst() then begin
+
+                    IntegrationPurchase."Posting Message" := CodMunErr;
+                    IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Error";
+                    IntegrationPurchase.Modify();
+
+                    IntPurStatus.Reset();
+                    IntPurStatus.SetRange("Document No.", IntegrationPurchase."Document No.");
+                    IntPurStatus.ModifyAll("Posting Message", IntegrationPurchase."Posting Message");
+                    IntPurStatus.ModifyAll(Status, IntegrationPurchase.Status);
+
+                    FromPurchaseHeader."Posting Message" := IntegrationPurchase."Posting Message";
+                    FromPurchaseHeader.Status := PurchaseHeader.Status::Open;
+                    //PurchaseHeader.Modify();
+
+                    exit(false);
+                end;
+            end;
         end else
             exit(true);
     end;
@@ -1077,6 +1100,10 @@ codeunit 50013 "Integration Purchase"
         PurchLine: Record "Purchase Line";
         UserSetup: Record "User Setup";
         OldDocu: Code[20];
+        OpenExportedPO: Boolean;
+        OpenPO: Boolean;
+        ProcessConfirmQst: Label 'Realmente deseja Alterar o Status do Pedido %1 já Exportado?';
+        ProcessConfirm: Text;
     begin
 
         IntegrationPurchase.Reset();
@@ -1090,40 +1117,98 @@ codeunit 50013 "Integration Purchase"
             IntegrationPurchase.FindSet();
             repeat
 
-                UserSetup.Reset();
-                UserSetup.Get(USERID);
-                if not UserSetup."Open PO" then
-                    error('Usuario %1 sem Permissão para Reabrir o Pedido', USERID);
+                if IntegrationPurchase.Status = IntegrationPurchase.Status::Exported then begin
 
-                if OldDocu <> IntegrationPurchase."Document No." then begin
-                    PurchHeader.Reset();
-                    PurchHeader.SetRange("No.", IntegrationPurchase."Document No.");
-                    if PurchHeader.Find('-') then
-                        repeat
-                            PurchHeader.Status := PurchHeader.Status::Open;
-                            PurchHeader.Modify();
+                    UserSetup.Reset();
+                    UserSetup.Get(USERID);
+                    if not UserSetup."Open Exported PO" then begin
+                        if OpenExportedPO = false then
+                            Message('Usuario %1 sem Permissão para Reabrir o Pedido com Status Exportado', USERID);
+                        OpenExportedPO := true;
+                    end else begin
+                        ProcessConfirm := StrSubstNo(ProcessConfirmQst, IntegrationPurchase."Document No.");
+                        if GuiAllowed then
+                            if not Confirm(ProcessConfirm) then
+                                Message('Processo cancelado pelo Usuario')
+                            else begin
 
-                            PurchLine.Reset;
-                            PurchLine.SetRange("Document Type", PurchHeader."Document Type");
-                            PurchLine.SetRange("Document No.", PurchHeader."No.");
-                            PurchLine.SetFilter(Type, '<>%1', PurchLine.Type::" ");
-                            PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::Open);
+                                if OldDocu <> IntegrationPurchase."Document No." then begin
+                                    PurchHeader.Reset();
+                                    PurchHeader.SetRange("No.", IntegrationPurchase."Document No.");
+                                    if PurchHeader.Find('-') then
+                                        repeat
+                                            PurchHeader.Status := PurchHeader.Status::Open;
+                                            PurchHeader.Modify();
 
-                        until PurchHeader.Next() = 0;
+                                            PurchLine.Reset;
+                                            PurchLine.SetRange("Document Type", PurchHeader."Document Type");
+                                            PurchLine.SetRange("Document No.", PurchHeader."No.");
+                                            PurchLine.SetFilter(Type, '<>%1', PurchLine.Type::" ");
+                                            PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::Open);
 
-                    OldDocu := IntegrationPurchase."Document No.";
+                                        until PurchHeader.Next() = 0;
 
-                end;
+                                    OldDocu := IntegrationPurchase."Document No.";
 
-                if PurchHeader."Posting Message" <> '' then begin
-                    IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Error";
-                    IntegrationPurchase.Modify();
+                                end;
+                                if PurchHeader."Posting Message" <> '' then begin
+                                    IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Error";
+                                    IntegrationPurchase.Modify();
+                                end else begin
+                                    IntegrationPurchase.Status := IntegrationPurchase.Status::Created;
+                                    IntegrationPurchase.Modify();
+                                end;
+
+                            end;
+
+                    end;
+
                 end else begin
-                    IntegrationPurchase.Status := IntegrationPurchase.Status::Created;
-                    IntegrationPurchase.Modify();
+
+                    UserSetup.Reset();
+                    UserSetup.Get(USERID);
+                    if not UserSetup."Open PO" then begin
+                        if OpenPO = false then
+                            Message('Usuario %1 sem Permissão para Reabrir o Pedido', USERID);
+                        OpenPO := true;
+
+                    end else begin
+
+                        if OldDocu <> IntegrationPurchase."Document No." then begin
+                            PurchHeader.Reset();
+                            PurchHeader.SetRange("No.", IntegrationPurchase."Document No.");
+                            if PurchHeader.Find('-') then
+                                repeat
+                                    PurchHeader.Status := PurchHeader.Status::Open;
+                                    PurchHeader.Modify();
+
+                                    PurchLine.Reset;
+                                    PurchLine.SetRange("Document Type", PurchHeader."Document Type");
+                                    PurchLine.SetRange("Document No.", PurchHeader."No.");
+                                    PurchLine.SetFilter(Type, '<>%1', PurchLine.Type::" ");
+                                    PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::Open);
+
+                                until PurchHeader.Next() = 0;
+
+                            OldDocu := IntegrationPurchase."Document No.";
+
+                        end;
+                    end;
+
+                    if PurchHeader."Posting Message" <> '' then begin
+                        IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Error";
+                        IntegrationPurchase.Modify();
+                    end else begin
+                        IntegrationPurchase.Status := IntegrationPurchase.Status::Created;
+                        IntegrationPurchase.Modify();
+                    end;
+
                 end;
+
+
 
             until IntegrationPurchase.Next() = 0;
+
         end;
 
     end;

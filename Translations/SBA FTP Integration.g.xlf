@@ -3438,6 +3438,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Codeunits Events - Method GenJnlCheckLine_OnBeforeRunCheck - NamedType Text50006</note>
         </trans-unit>
+        <trans-unit id="Codeunit 3625489113 - Method 1154271887 - NamedType 2515997561" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Realmente deseja Alterar o Status do Pedido %1 já Exportado?</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Codeunits Events - Method ReleasePurcDoc_OnAfterManualReopenPurchaseDoc - NamedType ProcessConfirmQst</note>
+        </trans-unit>
         <trans-unit id="Codeunit 3833420353 - NamedType 3114637384" size-unit="char" translate="yes" xml:space="preserve">
           <source>Open Excel file</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -3712,6 +3717,11 @@
           <source>Create Purchase Order   #1#############</source>
           <note from="Developer" annotates="general" priority="2">#1 IntegrationPurchase</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method CreatePurchaseByDoc - NamedType DialogCrePurchaseLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 2287923716 - NamedType 2515997561" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Realmente deseja Alterar o Status do Pedido %1 já Exportado?</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method PurchOpen - NamedType ProcessConfirmQst</note>
         </trans-unit>
         <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 3740721899" size-unit="char" translate="yes" xml:space="preserve">
           <source>The %1 document no. already exists for Vendor %2 - %3.</source>
@@ -10888,6 +10898,16 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA Customer - Control Integration Taxes Matrix  - Property ToolTip</note>
         </trans-unit>
+        <trans-unit id="PageExtension 1582173902 - Control 801247436 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3141392670">
+          <source>Specifies the value of the Base Calc. Credit Code field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA Tax Area - Control CADBR Base Calc. Credit Code - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 918401266 - Control 3018423458 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 337631938">
+          <source>Specifies the value of the Open Exported PO field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA User Setup - Control Open Exported PO - Property ToolTip</note>
+        </trans-unit>
         <trans-unit id="PageExtension 918401266 - Control 3833891709 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 337631938">
           <source>Specifies the value of the Open PO field.</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -11117,6 +11137,16 @@
           <source>Tax Settlement No.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA Process Jud - Info RRA - Field Tax Settlement No. - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 1582173902 - Field 801247436 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 3141392670">
+          <source>Base Calculation Credit Code</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA Tax Area - Field CADBR Base Calc. Credit Code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 918401266 - Field 3018423458 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 337631938">
+          <source>Open Exported PO</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA User Setup - Field Open Exported PO - Property Caption</note>
         </trans-unit>
         <trans-unit id="TableExtension 918401266 - Field 3833891709 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 337631938">
           <source>Open PO</source>

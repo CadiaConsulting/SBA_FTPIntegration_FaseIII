@@ -10080,6 +10080,18 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Action ReleaseSBA - Method OnAction - NamedType Release</note>
         </trans-unit>
+        <trans-unit id="PageExtension 918401266 - Control 3018423458 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 337631938">
+          <source>Specifies the value of the Open Exported PO field.</source>
+          <target>Especifica o valor do campo Abrir PO Exportado.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA User Setup - Control Open Exported PO - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 918401266 - Field 3018423458 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 337631938">
+          <source>Open Exported PO</source>
+          <target>Abrir PO Exportado</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA User Setup - Field Open Exported PO - Property Caption</note>
+        </trans-unit>
       </group>
     </body>
   </file>

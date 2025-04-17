@@ -22,6 +22,11 @@ pageextension 50007 "SBA User Setup" extends "User Setup"
                 ApplicationArea = All;
                 ToolTip = 'Specifies the value of the Open PO field.';
             }
+            field("Open Exported PO"; rec."Open Exported PO")
+            {
+                ApplicationArea = All;
+                ToolTip = 'Specifies the value of the Open Exported PO field.';
+            }
 
         }
 

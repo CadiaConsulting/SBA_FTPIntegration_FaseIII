@@ -54,4 +54,43 @@ codeunit 50008 "Table Events"
     begin
         IsHandled := true;
     end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Purchase line", 'OnAfterValidateEvent', 'Tax Area Code', false, false)]
+
+    local procedure PurchaseLineOnAfterValidateEventTaxAreaCode(var Rec: Record "Purchase Line")
+    var
+        TaxArea: Record "Tax Area";
+        TaxAreaLine: Record "Tax Area Line";
+    begin
+
+        if rec."Tax Area Code" <> '' then begin
+
+            if TaxArea.get(rec."Tax Area Code") then begin
+                rec."CADBR Base Calculation Credit Code" := TaxArea."CADBR Base Calc. Credit Code";
+
+                TaxAreaLine.Reset();
+                TaxAreaLine.SetRange("Tax Area", TaxArea.Code);
+                if TaxAreaLine.FindSet() then
+                    repeat
+                        TaxAreaLine.CalcFields("CADBR Tax Identification");
+
+                        if TaxAreaLine."CADBR Tax Identification" = TaxAreaLine."CADBR Tax Identification"::ICMS then
+                            rec."CADBR ICMS CST Code" := TaxAreaLine."CADBR CST Code";
+
+                        if TaxAreaLine."CADBR Tax Identification" = TaxAreaLine."CADBR Tax Identification"::pis then
+                            rec."CADBR PIS CST Code" := TaxAreaLine."CADBR CST Code";
+
+                        if TaxAreaLine."CADBR Tax Identification" = TaxAreaLine."CADBR Tax Identification"::COFINS then
+                            rec."CADBR COFINS CST Code" := TaxAreaLine."CADBR CST Code";
+
+                        if TaxAreaLine."CADBR Tax Identification" = TaxAreaLine."CADBR Tax Identification"::IPI then
+                            rec."CADBR IPI CST Code" := TaxAreaLine."CADBR CST Code";
+
+                    until TaxAreaLine.Next() = 0;
+
+            end;
+
+        end;
+
+    end;
 }

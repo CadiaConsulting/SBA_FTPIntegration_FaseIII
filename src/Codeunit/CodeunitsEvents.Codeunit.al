@@ -195,17 +195,58 @@ codeunit 50017 "Codeunits Events"
     var
         intPurch: Record "Integration Purchase";
         UserSetup: Record "User Setup";
+        OpenExportedPO: Boolean;
+        OpenPO: Boolean;
+        ProcessConfirmQst: Label 'Realmente deseja Alterar o Status do Pedido %1 já Exportado?';
+        ProcessConfirm: Text;
     begin
-
-        UserSetup.Reset();
-        UserSetup.Get(USERID);
-        if not UserSetup."Open PO" then
-            error('Usuario %1 sem Permissão para Reabrir o Pedido', USERID);
 
         intPurch.Reset();
         intPurch.SetRange("Document No.", PurchaseHeader."No.");
-        if intPurch.Find('-') then
-            intPurch.ModifyAll(Status, intPurch.Status::Created);
+        if intPurch.Find('-') then begin
+
+            if intPurch.Status = intPurch.Status::Exported then begin
+
+                UserSetup.Reset();
+                UserSetup.Get(USERID);
+                if not UserSetup."Open Exported PO" then begin
+
+                    PurchaseHeader.Status := PurchaseHeader.Status::Released;
+                    PurchaseHeader.Modify();
+                    if OpenExportedPO = false then
+                        Message('Usuario %1 sem Permissão para Reabrir o Pedido com Status Exportado', USERID);
+                    OpenExportedPO := true;
+
+                end else begin
+                    ProcessConfirm := StrSubstNo(ProcessConfirmQst, intPurch."Document No.");
+                    if GuiAllowed then begin
+                        if not Confirm(ProcessConfirm) then begin
+                            PurchaseHeader.Status := PurchaseHeader.Status::Released;
+                            PurchaseHeader.Modify();
+                            Message('Processo cancelado pelo Usuario');
+
+                        end else
+                            intPurch.ModifyAll(Status, intPurch.Status::Created);
+                    end else
+                        intPurch.ModifyAll(Status, intPurch.Status::Created);
+
+                end;
+
+            end else begin
+
+                UserSetup.Reset();
+                UserSetup.Get(USERID);
+                if not UserSetup."Open PO" then begin
+                    Message('Usuario %1 sem Permissão para Reabrir o Pedido', USERID);
+                    PurchaseHeader.Status := PurchaseHeader.Status::Released;
+                    PurchaseHeader.Modify();
+                end else
+                    intPurch.ModifyAll(Status, intPurch.Status::Created);
+
+            end;
+
+        end;
+
 
     end;
 
