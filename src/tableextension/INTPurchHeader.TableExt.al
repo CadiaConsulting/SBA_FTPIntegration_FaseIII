@@ -46,6 +46,17 @@ tableextension 50013 INTPurchHeader extends "Purchase Header"
         {
             Caption = 'Posting Message';
         }
+        field(50200; "Municipality Service Name"; text[60])
+        {
+            Caption = 'Municipality Service Name';
+            Editable = false;
+        }
+        field(50201; "Municipality Service State"; code[20])
+        {
+            Caption = 'Municipality Service State';
+            Editable = false;
+        }
+
     }
 
 }

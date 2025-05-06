@@ -64,6 +64,19 @@ pageextension 50013 "INTPurchHeader" extends "Purchase Order"
                 Editable = not CheckStatus;
             }
         }
+        addafter("CADBR Service Delivery City")
+        {
+            field("Municipality Service Name"; rec."Municipality Service Name")
+            {
+                ApplicationArea = All;
+                ToolTip = 'Municipality Service Name';
+            }
+            field("Municipality Service State"; rec."Municipality Service State")
+            {
+                ApplicationArea = All;
+                ToolTip = 'Municipality Service State';
+            }
+        }
 
         modify("Area")
         {

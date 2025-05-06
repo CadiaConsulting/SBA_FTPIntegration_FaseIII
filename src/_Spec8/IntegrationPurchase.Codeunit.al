@@ -796,8 +796,8 @@ codeunit 50013 "Integration Purchase"
                     end;
                 end;
             end;
-
-            if (FromPurchaseHeader."CADBR Fiscal Document Type" = 'NFSE') and (FromPurchaseHeader."CADBR Service Delivery City" = '') then begin
+            if (FromPurchaseHeader."CADBR Fiscal Document Type" <> '') and (DocFiscal.Get(FromPurchaseHeader."CADBR Fiscal Document Type")) and
+                 (DocFiscal.Especie = 'NFSE') and (FromPurchaseHeader."CADBR Service Delivery City" = '') then begin
 
                 IntegrationPurchase.Reset();
                 IntegrationPurchase.SetRange("Document No.", PurchaseHeader."No.");
@@ -1881,6 +1881,8 @@ codeunit 50013 "Integration Purchase"
         intPurch: Record "Integration Purchase";
         FiscalDoc: Record "CADBR Fiscal Document Type";
         CSTImpostos: Record "CADBR CST Impostos";
+        TaxAreaLine: Record "Tax Area Line";
+        ServiceCode: Record "CADBR NFS Service Code";
         DocumentAlreadyExists: label 'The %1 document no. already exists for Vendor %2 - %3.';
         DocumentAndSerieAlreadyExists: label 'The Document No. %1 and Print Serie %2 already exists for Vendor %3 - %4.';
         DocumentSerieAndFiscalDocTypeAlreadyExists: label 'The Document No. %1, Print Serie %2 and Fiscal Doc. Type %3 already exists for Vendor %4 - %5.';
@@ -1895,6 +1897,9 @@ codeunit 50013 "Integration Purchase"
         Label50019: Label 'NFe Reference key must have a value in Header.';
         Label50010: Label 'The NF-e key series does not match the Print Series';
         Label50011: Label 'The NF-e key number does not match the Tax Nº.';
+        Label50012: Label 'The information of CTS PIS or COFINS is different from the Tax Area Code please adjust.';
+        Label50013: Label 'The Service Code must have a value in Line. Please select a valid service code from the registered list.';
+        Label50015: Label 'The Service Code does not exist in Table. Please select a valid service code from the registered list.';
         PrintSerie: Integer;
         InvoiceNo: Integer;
 
@@ -1971,6 +1976,7 @@ codeunit 50013 "Integration Purchase"
         PurcLine.Reset();
         PurcLine.SetRange("Document Type", PurchaseHeader."Document Type");
         PurcLine.SetRange("Document No.", PurchaseHeader."No.");
+        PurcLine.SetFilter(Type, '<>%1', PurcLine.Type::" ");
         if PurcLine.FindSet() then
             repeat
                 if PurcLine."CADBR Origin Code" = '' then
@@ -1978,6 +1984,18 @@ codeunit 50013 "Integration Purchase"
 
                 if PurcLine."Direct Unit Cost" = 0 then
                     PurchaseHeader."Posting Message" := Label50002;
+
+                if (PurchaseHeader."CADBR Fiscal Document Type" <> '') and (FiscalDoc.Get(PurchaseHeader."CADBR Fiscal Document Type")) and
+                                (FiscalDoc.Especie = 'NFSE') then begin
+
+                    if PurcLine."CADBR Service Code" = '' then
+                        PurchaseHeader."Posting Message" := Label50013
+                    else
+                        if not ServiceCode.Get(PurcLine."CADBR Service Code") then
+                            PurchaseHeader."Posting Message" := Label50015;
+
+                end;
+
 
                 if PurcLine."CADBR Base Calculation Credit Code" = '' then begin
 
@@ -1988,6 +2006,25 @@ codeunit 50013 "Integration Purchase"
                     if CSTImpostos.get(CSTImpostos."Tax Type"::COFINS, PurcLine."CADBR COFINS CST Code") then
                         if CSTImpostos."Tax Credit" then
                             PurchaseHeader."Posting Message" := Label50001;
+
+                end;
+                if (PurcLine."Tax Area Code" <> '') then begin
+                    TaxAreaLine.Reset();
+                    TaxAreaLine.SetRange("Tax Area", PurcLine."Tax Area Code");
+                    if TaxAreaLine.FindSet() then
+                        repeat
+                            TaxAreaLine.CalcFields("CADBR Tax Identification");
+
+                            if TaxAreaLine."CADBR Tax Identification" = TaxAreaLine."CADBR Tax Identification"::PIS then begin
+                                if TaxAreaLine."CADBR CST Code" <> PurcLine."CADBR Pis CST Code" then
+                                    PurchaseHeader."Posting Message" := Label50012;
+                            end;
+
+                            if TaxAreaLine."CADBR Tax Identification" = TaxAreaLine."CADBR Tax Identification"::COFINS then begin
+                                if TaxAreaLine."CADBR CST Code" <> PurcLine."CADBR COFINS CST Code" then
+                                    PurchaseHeader."Posting Message" := Label50012;
+                            end;
+                        until TaxAreaLine.Next() = 0;
 
                 end;
 

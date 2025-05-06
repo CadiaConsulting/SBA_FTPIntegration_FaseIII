@@ -57,13 +57,13 @@ codeunit 50008 "Table Events"
 
     [EventSubscriber(ObjectType::Table, Database::"Purchase line", 'OnAfterValidateEvent', 'Tax Area Code', false, false)]
 
-    local procedure PurchaseLineOnAfterValidateEventTaxAreaCode(var Rec: Record "Purchase Line")
+    local procedure PurchaseLineOnAfterValidateEventTaxAreaCode(var Rec: Record "Purchase Line"; CurrFieldNo: Integer; var xRec: Record "Purchase Line")
     var
         TaxArea: Record "Tax Area";
         TaxAreaLine: Record "Tax Area Line";
     begin
 
-        if rec."Tax Area Code" <> '' then begin
+        if (rec."Tax Area Code" <> '') and (CurrFieldNo = 85) then begin
 
             if TaxArea.get(rec."Tax Area Code") then begin
                 rec."CADBR Base Calculation Credit Code" := TaxArea."CADBR Base Calc. Credit Code";
@@ -90,6 +90,28 @@ codeunit 50008 "Table Events"
 
             end;
 
+        end;
+
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Purchase Header", 'OnAfterValidateEvent', 'CADBR Service Delivery City', false, false)]
+
+    local procedure PurchaseHeaderOnAfterValidateEventServiceDeliveryCity(var Rec: Record "Purchase Header")
+    var
+        CADBRMunicipio: Record "CADBR Municipio";
+    begin
+
+        if rec."CADBR Service Delivery City" <> '' then begin
+
+            if CADBRMunicipio.get(rec."CADBR Service Delivery City") then begin
+                rec."Municipality Service Name" := CADBRMunicipio.City;
+                rec."Municipality Service State" := CADBRMunicipio."Territory Code";
+
+            end;
+
+        end else begin
+            rec."Municipality Service Name" := '';
+            rec."Municipality Service State" := '';
         end;
 
     end;

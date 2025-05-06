@@ -10092,6 +10092,48 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA User Setup - Field Open Exported PO - Property Caption</note>
         </trans-unit>
+        <trans-unit id="TableExtension 2627532652 - Field 3044535306 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2072992664">
+          <source>Municipality Service Name</source>
+          <target>Nome Municipio Prest. Serviço</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension INTPurchHeader - Field Municipality Service Name - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 2627532652 - Field 3044535306 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2072992664">
+          <source>Municipality Service Name</source>
+          <target>Nome Municipio Prest. Serviço</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension INTPurchHeader - Field Municipality Service Name - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2627532652 - Control 1090175778 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 387971303">
+          <source>Municipality Service State</source>
+          <target>Estado Prestação Serviço</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchHeader - Control Municipality Service State - Property ToolTip</note>
+        </trans-unit>
+         <trans-unit id="TableExtension 2627532652 - Field 1090175778 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2072992664">
+          <source>Municipality Service State</source>
+          <target>Estado Prestação Serviço</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension INTPurchHeader - Field Municipality Service State - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 2065636172" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The information of CTS PIS or COFINS is different from the Tax Area Code please adjust.</source>
+          <target>As informações do CTS PIS ou COFINS são diferentes do Código da Área Fiscal por favor ajuste</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50012</note>
+        </trans-unit>
+         <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 1427939555" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Service Code must have a value in Line. Please select a valid service code from the registered list.</source>
+          <target>O Código de Serviço não pode ser Vazio. Selecione um código de serviço válido na lista registrada.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50013</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 152546321" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Service Code does not exist in Table. Please select a valid service code from the registered list.</source>
+          <target>O Código de Serviço não existe no cadastro. Selecione um código de serviço válido na lista registrada.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50015</note>
+        </trans-unit>
       </group>
     </body>
   </file>
