@@ -3498,6 +3498,21 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Import Excel Buffer - Method ImportExcelPurchase - NamedType PostingDateEmptyErr</note>
         </trans-unit>
+        <trans-unit id="Codeunit 1853925422 - Method 1499701678 - NamedType 131137895" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Integration File already imported %1.</source>
+          <note from="Developer" annotates="general" priority="2">%1 - File</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Import Excel Buffer - Method ImportExcelSales - NamedType FileOld01Err</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1853925422 - Method 1499701678 - NamedType 1168044693" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Sales Order with Document No. %1 already imported.</source>
+          <note from="Developer" annotates="general" priority="2">%1 - Document No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Import Excel Buffer - Method ImportExcelSales - NamedType DocOld01Err</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1853925422 - Method 1499701678 - NamedType 3631401444" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Sales Order and Line with Document No. %1 already imported to File %2.</source>
+          <note from="Developer" annotates="general" priority="2">%1 - Document No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Import Excel Buffer - Method ImportExcelSales - NamedType DocOld02Err</note>
+        </trans-unit>
         <trans-unit id="Codeunit 443172788 - Method 3829821075 - NamedType 3511077009" size-unit="char" translate="yes" xml:space="preserve">
           <source>the Bank Account %1 does not exist.</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -4023,6 +4038,11 @@
           <note from="Developer" annotates="general" priority="2">#1 IntegrationSales</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntegrationSales - Method CreateSales - NamedType DialogCreSalesLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 3159930562 - Method 2648269774 - NamedType 889073484" size-unit="char" translate="yes" xml:space="preserve">
+          <source>-PIS/COFINS values from Billing App differ from those calculated by the system.</source>
+          <note from="Developer" annotates="general" priority="2">%1 - Item No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntegrationSales - Method CreateSalesOrder - NamedType PISCofins01Err</note>
+        </trans-unit>
         <trans-unit id="Codeunit 3159930562 - Method 3884467271 - NamedType 1001602479" size-unit="char" translate="yes" xml:space="preserve">
           <source>Customer %1 Not Found</source>
           <note from="Developer" annotates="general" priority="2">%1 - Customer No.</note>
@@ -4042,6 +4062,21 @@
           <source> - G/L Account GP %1 different from G/L Account %2</source>
           <note from="Developer" annotates="general" priority="2">%1 - G/L Accoun No. , %2 - G/L Accoun No.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntegrationSales - Method ValidateIntSales - NamedType GL02Err</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3159930562 - Method 3884467271 - NamedType 1813653849" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Sales Order %1 has total value equal to zero.</source>
+          <note from="Developer" annotates="general" priority="2">%1 - Item No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntegrationSales - Method ValidateIntSales - NamedType UnitPrice01Err</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3159930562 - Method 3884467271 - NamedType 2726945802" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Automatic Tax Area Config. not registered for Item %1.</source>
+          <note from="Developer" annotates="general" priority="2">%1 - Item No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntegrationSales - Method ValidateIntSales - NamedType TaxSetup01Err</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3159930562 - Method 3884467271 - NamedType 1168044693" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Sales Order with Document No. %1 already imported.</source>
+          <note from="Developer" annotates="general" priority="2">%1 - Document No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntegrationSales - Method ValidateIntSales - NamedType DocOld01Err</note>
         </trans-unit>
         <trans-unit id="Codeunit 308713983 - Method 3829821075 - NamedType 3511077009" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Bank Account %1 does not exist. </source>
@@ -7863,6 +7898,206 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSales - Action SalesOrder - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Page 2696222769 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Integration Sales Order Posted</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 410940989 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Customer Posting Group</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Customer Posting Group - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 3461834954 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Description</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Description - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 580412389 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Document Date</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Document Date - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 1796387818 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Error Order</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Error Order - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 3592100787 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Error Import Excel</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Errors Import Excel - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 3764622026 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Excel File Name</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Excel File Name - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 1527563463 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>External Document No.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control External Document No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 2091063326 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Freight Billed To</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Freight Billed To - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 4274826855 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>G/L Account</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control G/L Account - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 568743302 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>No.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Item No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 3320823955 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Line No.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Line No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 4200184881 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>No.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 2632124822 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Order Date</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Order Date - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 3710982960 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Posting Date</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Posting Date - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 3066042533 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Posting Message</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Posting Message - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 2704404533 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Quantity</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Quantity - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 1225278069 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Sell-to Customer No.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Sell-to Customer No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 1577567912 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Shortcut Dimension 1 Code</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Shortcut Dimension 1 Code - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 1003760969 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Shortcut Dimension 2 Code</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Shortcut Dimension 2 Code - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 781257514 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Shortcut Dimension 3 Code</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Shortcut Dimension 3 Code - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 2711388939 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Shortcut Dimension 4 Code</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Shortcut Dimension 4 Code - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 405681708 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Shortcut Dimension 5 Code</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Shortcut Dimension 5 Code - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 4126842061 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Shortcut Dimension 6 Code</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Shortcut Dimension 6 Code - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 513339096 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Status</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Status - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 4135304424 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tax (COFINS) Line</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Tax (COFINS) Line - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 967006040 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tax (COFINS) Order</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Tax (COFINS) Order - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 3654871836 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tax (PIS) Line</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Tax (PIS) line - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 1577378764 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tax (PIS) Order</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Tax (PIS) Order - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 2617262098 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tax From Billing APP (COFINS)</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Tax From Billing APP (COFINS) - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 1929056294 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tax From Billing APP (PIS)</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Tax From Billing APP (PIS) - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 1878130204 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Type</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Type - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 2937233469 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Unit Price</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Unit Price - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Control 3001618318 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Your Reference</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Control Your Reference - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Action 1994964448 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Customer Card</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Action Customer - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Action 1994964448 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Customer Card</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Action Customer - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Action 894436450 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Item Card</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Action Iten - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Action 894436450 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Item Card</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Action Iten - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Action 3617415722 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Sales Order Card</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Action SalesOrder - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2696222769 - Action 3617415722 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Sales Order Card</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntegrationSalesPosted - Action SalesOrder - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Page 308713983 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Integration Purchase Payment</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -10378,6 +10613,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension IntCADBRTaxBRMngrRC - Action SalesOrderInt - Property Caption</note>
         </trans-unit>
+        <trans-unit id="PageExtension 2807289801 - Action 2658546776 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3500708443">
+          <source>Integration Sales Order Posted</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension IntCADBRTaxBRMngrRC - Action SalesOrderIntPosted - Property Caption</note>
+        </trans-unit>
         <trans-unit id="PageExtension 1719240225 - Action 724874994 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2583272393">
           <source>Import from Excel SBA format to General Journal.</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -10828,6 +11068,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTRBusinessMngrRoleCenter - Action SalesOrderInt - Property Caption</note>
         </trans-unit>
+        <trans-unit id="PageExtension 904312498 - Action 2658546776 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2458191494">
+          <source>Integration Sales Order Posted</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTRBusinessMngrRoleCenter - Action SalesOrderIntPosted - Property Caption</note>
+        </trans-unit>
         <trans-unit id="PageExtension 400503519 - Control 2503574258 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2026081320">
           <source>TAX FROM BILLING APP (COFINS)</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -10898,6 +11143,41 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension REINF Settlement - R4010 - Action ProcessJudInfRRA - Property Caption</note>
         </trans-unit>
+        <trans-unit id="PageExtension 1909477854 - Control 979743402 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2476585294">
+          <source>Amount Total</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA CADBR CNAB Payment - Control Amount Total - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1909477854 - Control 3943350736 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2476585294">
+          <source>Charge Amount Total</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA CADBR CNAB Payment - Control Charge Amount Total - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1909477854 - Control 267852877 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2476585294">
+          <source>Discount Amount Total</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA CADBR CNAB Payment - Control Discount Amount Total - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1909477854 - Control 1963167684 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2476585294">
+          <source>Interest Amount Total</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA CADBR CNAB Payment - Control Interest Amount Total - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1909477854 - Control 2731490539 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2476585294">
+          <source>Net Amount Total</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA CADBR CNAB Payment - Control Net Amount Total - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1909477854 - Control 2515545170 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2476585294">
+          <source>Qty Total</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA CADBR CNAB Payment - Control Qty Total - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1909477854 - Control 3420332607 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2476585294">
+          <source>Retained Taxes Total</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA CADBR CNAB Payment - Control Retained Taxes Total - Property ToolTip</note>
+        </trans-unit>
         <trans-unit id="PageExtension 2569607656 - Control 1305184396 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 147827640">
           <source>CADBR Service Delivery City</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -10917,6 +11197,11 @@
           <source>NFTS SP</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA CADBR Tax Settlement - Action NFTSSP - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2243826394 - Control 712568034 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 193025300">
+          <source>Documents Applies</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA CNAB Payment Subform - Control Documents Applies - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="PageExtension 3996370096 - Control 2788186602 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 523354100">
           <source>Integration Taxes Matrix</source>
@@ -11148,6 +11433,41 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">TableExtension PostingPreviewGL - Field No. 2 - Property Caption</note>
         </trans-unit>
+        <trans-unit id="TableExtension 1909477854 - Field 979743402 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2476585294">
+          <source>Amount Total</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA CADBR CNAB Payment - Field Amount Total - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 1909477854 - Field 3943350736 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2476585294">
+          <source>Charge Amount Total</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA CADBR CNAB Payment - Field Charge Amount Total - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 1909477854 - Field 267852877 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2476585294">
+          <source>Discount Amount Total</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA CADBR CNAB Payment - Field Discount Amount Total - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 1909477854 - Field 1963167684 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2476585294">
+          <source>Interest Amount Total</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA CADBR CNAB Payment - Field Interest Amount Total - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 1909477854 - Field 2731490539 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2476585294">
+          <source>Net Amount Total</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA CADBR CNAB Payment - Field Net Amount Total - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 1909477854 - Field 2515545170 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2476585294">
+          <source>Qty Total</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA CADBR CNAB Payment - Field Qty Total - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 1909477854 - Field 3420332607 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2476585294">
+          <source>Retained Taxes Total</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA CADBR CNAB Payment - Field Retained Taxes Total - Property Caption</note>
+        </trans-unit>
         <trans-unit id="TableExtension 799268939 - Field 1305184396 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 3605488411">
           <source>CADBR Service Delivery City</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -11157,6 +11477,11 @@
           <source>Versão do Layout NFST em Lote</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA CADBR NF-e Setup - Field Versao do Layout NFST em Lote - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 1545619430 - Field 712568034 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 1570665720">
+          <source>Documents Applies</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA CNAB Payment Line - Field Documents Applies - Property Caption</note>
         </trans-unit>
         <trans-unit id="TableExtension 3996370096 - Field 3950862098 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 1994964448">
           <source>Integration Taxes Matrix </source>

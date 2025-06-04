@@ -28,6 +28,12 @@ pageextension 50021 "IntCADBRTaxBRMngrRC" extends "CADBR Tax BR Manager RC"
                             ApplicationArea = all;
                             RunObject = page IntegrationSales;
                         }
+                        action(SalesOrderIntPosted)
+                        {
+                            Caption = 'Integration Sales Order Posted';
+                            ApplicationArea = all;
+                            RunObject = page IntegrationSalesPosted;
+                        }
                         action(SalesCredMemoInt)
                         {
                             Caption = 'Integration Sales Credit Memo';

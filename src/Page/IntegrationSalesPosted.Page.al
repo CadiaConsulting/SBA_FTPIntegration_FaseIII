@@ -1,11 +1,12 @@
-page 50010 IntegrationSales
+page 50018 IntegrationSalesPosted
 {
     PageType = List;
     ApplicationArea = All;
     UsageCategory = Lists;
     SourceTable = IntegrationSales;
-    SourceTableView = sorting("Excel File Name", "No.", "Line No.") where(Status = filter(Imported | Created | "Data Error" | Reviewed | "On Hold" | "Data Excel Error" | "Layout Error" | "Exported" | "Under Analysis"));
-    Caption = 'Integration Sales Order';
+    SourceTableView = sorting("Excel File Name", "No.", "Line No.") where(Status = filter(Posted | Cancelled));
+    Editable = false;
+    Caption = 'Integration Sales Order Posted';
 
     layout
     {
@@ -199,62 +200,7 @@ page 50010 IntegrationSales
     {
         area(Processing)
         {
-            action(ImportExcel)
-            {
-                ApplicationArea = All;
-                Caption = 'Import Excel Sales Order';
-                Image = CreateDocument;
-                ToolTip = 'Import Excel Sales Order';
 
-                trigger OnAction();
-                var
-                    ImportExcelBuffer: codeunit "Import Excel Buffer";
-
-                begin
-                    ImportExcelBuffer.ImportExcelSales();
-
-                    CurrPage.SaveRecord();
-                    CurrPage.Update();
-                    Message('Import Excel Sales Order');
-                end;
-            }
-            action(CreateOrder)
-            {
-                ApplicationArea = All;
-                Caption = 'Create Order';
-                Image = CreateDocument;
-                ToolTip = 'Create Order';
-
-                trigger OnAction();
-                var
-                    IntSales: Record IntegrationSales;
-                begin
-                    CurrPage.SetSelectionFilter(IntSales);
-                    IntSales.CopyFilters(Rec);
-                    IntegrationSales.CreateSales(IntSales);
-                    CurrPage.SaveRecord();
-                    CurrPage.Update();
-                    Message('Create Order');
-                end;
-            }
-            action(PostOrder)
-            {
-                ApplicationArea = All;
-                Caption = 'Post Order';
-                Image = PostDocument;
-                ToolTip = 'Post Order';
-
-                trigger OnAction();
-                var
-                    IntSales: Record IntegrationSales;
-                begin
-                    CurrPage.SetSelectionFilter(IntSales);
-                    IntSales.CopyFilters(Rec);
-                    IntegrationSales.PostSales(IntSales);
-                    CurrPage.Update();
-                    Message('Post Order');
-                end;
-            }
             action(SalesOrder)
             {
                 ApplicationArea = All;
@@ -264,10 +210,10 @@ page 50010 IntegrationSales
 
                 trigger OnAction();
                 var
-                    SalesHeader: Record "Sales Header";
+                    SalesHeader: Record "Sales Invoice Header";
                 begin
-                    if SalesHeader.get(SalesHeader."Document Type"::Order, rec."No.") then
-                        PAGE.Run(PAGE::"Sales Order", SalesHeader);
+                    if SalesHeader.get(rec."No.") then
+                        PAGE.Run(PAGE::"Posted Sales Invoice", SalesHeader);
                 end;
             }
             action(Customer)
@@ -298,24 +244,6 @@ page 50010 IntegrationSales
                 begin
                     Item."No." := rec."Item No.";
                     PAGE.Run(PAGE::"Item Card", Item);
-                end;
-            }
-            action(DeleteEntries)
-            {
-                ApplicationArea = All;
-                Caption = 'Delete Entries';
-                Image = PostDocument;
-                ToolTip = 'Delete Entries';
-
-                trigger OnAction();
-                var
-                    IntAc: Record IntegrationSales;
-                begin
-                    CurrPage.SetSelectionFilter(IntAc);
-                    IntAc.CopyFilters(Rec);
-                    IntAc.DeleteAll(true);
-                    CurrPage.Update();
-
                 end;
             }
 

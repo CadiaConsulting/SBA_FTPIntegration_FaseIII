@@ -10134,6 +10134,48 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50015</note>
         </trans-unit>
+        <trans-unit id="Codeunit 1853925422 - Method 1499701678 - NamedType 131137895" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Integration File already imported %1.</source>
+          <target>Arquivo de Integração já Importado Anteriormente %1</target>
+          <note from="Developer" annotates="general" priority="2">%1 - File</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Import Excel Buffer - Method ImportExcelSales - NamedType FileOld01Err</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1853925422 - Method 1499701678 - NamedType 1168044693" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Sales Order with Document No. %1 already imported.</source>
+          <target>Pedido com Nº do documento %1 já importado.</target>
+          <note from="Developer" annotates="general" priority="2">%1 - Document No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Import Excel Buffer - Method ImportExcelSales - NamedType DocOld01Err</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3159930562 - Method 3884467271 - NamedType 1813653849" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Sales Order %1 has total value equal to zero.</source>
+          <target>Pedido de Venda %1 com valor total igual a zero.</target>
+          <note from="Developer" annotates="general" priority="2">%1 - Item No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntegrationSales - Method ValidateIntSales - NamedType UnitPrice01Err</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3159930562 - Method 3884467271 - NamedType 2726945802" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Automatic Tax Area Config. not registered for Item %1.</source>
+          <target>Config. Área Impostos Automática não cadastrada para o Item %1.</target>
+          <note from="Developer" annotates="general" priority="2">%1 - Item No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntegrationSales - Method ValidateIntSales - NamedType TaxSetup01Err</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3159930562 - Method 2648269774 - NamedType 889073484" size-unit="char" translate="yes" xml:space="preserve">
+          <source>-PIS/COFINS values from Billing App differ from those calculated by the system.</source>
+          <target>-Valores de PIS/COFINS do Billing App diferentes dos calculados pelo sistema.</target>
+          <note from="Developer" annotates="general" priority="2">%1 - Item No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntegrationSales - Method CreateSalesOrder - NamedType PISCofins01Err</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3159930562 - Method 3884467271 - NamedType 1168044693" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Sales Order with Document No. %1 already imported.</source>
+          <target>Pedido com Nº do documento %1 já importado.</target>
+          <note from="Developer" annotates="general" priority="2">%1 - Document No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntegrationSales - Method ValidateIntSales - NamedType DocOld01Err</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1853925422 - Method 1499701678 - NamedType 3631401444" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Sales Order and Line with Document No. %1 already imported to File %2.</source>
+          <target>Pedido e linha com Nº do documento %1 Duplicado no Arquivo %2.</target>
+          <note from="Developer" annotates="general" priority="2">%1 - Document No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Import Excel Buffer - Method ImportExcelSales - NamedType DocOld02Err</note>
+        </trans-unit>
       </group>
     </body>
   </file>

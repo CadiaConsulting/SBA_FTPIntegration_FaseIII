@@ -48,10 +48,13 @@ codeunit 50002 "Import Excel Buffer"
     procedure ImportExcelSales()
     var
         IntegrationSales: Record "IntegrationSales";
+        IntSalesOld: Record "IntegrationSales";
         IntegrationErros: Record IntegrationErros;
         FTPIntSetup: Record "FTP Integration Setup";
         FTPDir: Record "FTP Directory";
         FTPCommunication: codeunit "FTP Communication";
+        IntSales: Codeunit IntegrationSales;
+        SalesInvHeader: Record "Sales Invoice Header";
         ret: Text;
         lines: List of [Text];
         line: Text;
@@ -60,13 +63,16 @@ codeunit 50002 "Import Excel Buffer"
         RowNo: Integer;
         ColNo: Integer;
         LineNo: Integer;
+        LineNoDupli: Integer;
         MaxRowNo: Integer;
         CRLF: Char;
         ErrorFile: Boolean;
         ExistLine: Boolean;
         MaxCollumn: Integer;
         Item: Record Item;
-
+        FileOld01Err: label 'Integration File already imported %1.', Comment = '%1 - File';
+        DocOld01Err: label 'Sales Order with Document No. %1 already imported.', Comment = '%1 - Document No.';
+        DocOld02Err: label 'Sales Order and Line with Document No. %1 already imported to File %2.', Comment = '%1 - Document No.';
 
     begin
         RowNo := 0;
@@ -75,6 +81,8 @@ codeunit 50002 "Import Excel Buffer"
         LineNo := 0;
         MaxCollumn := 0;
         ExistLine := false;
+        LineNoDupli := 99999;
+
 
         //FTPIntSetup.Get(FTPIntSetup.Integration::Sales);
         FTPIntSetup.Reset();
@@ -146,257 +154,336 @@ codeunit 50002 "Import Excel Buffer"
 
                     if IntegrationSales.Insert() then
                         ErrorFile := true;
-                end else
+                end else begin
                     //Column END Error
 
-                        for RowNo := 2 to MaxRowNo do begin
-                        LineNo := LineNo + 10000;
-                        ExistLine := false;
+                    clear(ExistLine);
 
-                        if (StrLen(GetValueAtCell(RowNo, 2)) <= 20) then begin
+                    IntegrationSales.Reset();
+                    IntegrationSales.SetRange("Excel File Name", FileName);
+                    if IntegrationSales.FindFirst() then begin
 
-                            if (IntegrationSales.Get(GetValueAtCell(RowNo, 2), GetValueAtCell(RowNo, 20))) then begin
-                                //Not Modify Posted Line
-                                if IntegrationSales.Status = IntegrationSales.Status::Posted then begin
-                                    ExistLine := false;
-                                    IntegrationSales."Posting Message" := 'Duplicate ' + copystr(Filename, 1, 200);
-                                    IntegrationSales.Modify();
-                                    ErrorFile := true;
-                                end else begin
-                                    ExistLine := true;
-                                    IntegrationSales.Status := IntegrationSales.Status::Imported;
-                                end;
-                            end else
-                                IntegrationSales.Init();
-                            IntegrationSales.Status := IntegrationSales.Status::Imported;
-                            Evaluate(IntegrationSales."No.", GetValueAtCell(RowNo, 2));
-                            Evaluate(IntegrationSales."Line No.", GetValueAtCell(RowNo, 20));
-                            IntegrationSales."Excel File Name" := copystr(Filename, 1, 200);
-                        end else begin
-                            IntegrationSales.Init();
-                            Evaluate(IntegrationSales."No.", 'Errors-' + format(RowNo));
-                            Evaluate(IntegrationSales."Line No.", GetValueAtCell(RowNo, 20));
-                            IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                            IntegrationSales."Excel File Name" := copystr(Filename, 1, 200);
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
-                              IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("No."), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 2), IntegrationSales."Excel File Name");
-                        end;
+                        ExistLine := true;
+                        ErrorFile := true;
 
-                        if (StrLen(GetValueAtCell(RowNo, 3)) <= 20) then
-                            Evaluate(IntegrationSales."Sell-to Customer No.", GetValueAtCell(RowNo, 3))
-                        else begin
-                            IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
-                              IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Sell-to Customer No."), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 3), IntegrationSales."Excel File Name");
-                        end;
+                        IntegrationSales.Init();
+                        //"Document No"
+                        IntegrationSales."No." := 'ERRO' + DelChr(Format(Time), '=', ':');
 
-                        if (StrLen(GetValueAtCell(RowNo, 4)) <= 35) then
-                            Evaluate(IntegrationSales."Your Reference", GetValueAtCell(RowNo, 4))
-                        else begin
-                            IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
-                              IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Your Reference"), 1, 50),
-                              'Maximum 35 characters', GetValueAtCell(RowNo, 4), IntegrationSales."Excel File Name");
-                        end;
+                        //Line No.
+                        IntegrationSales."Line No." := 1;
 
-                        if ValidateDate(GetValueAtCell(RowNo, 5)) then
-                            IntegrationSales."Order Date" := GlobalDateYes
-                        else begin
-                            IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
-                            IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Order Date"), 1, 50),
-                            CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 5), IntegrationSales."Excel File Name");
+                        IntegrationSales.Status := IntegrationSales.Status::"Layout Error";
+                        IntegrationSales."Posting Message" := StrSubstNo(FileOld01Err, FileName);
+                        IntegrationSales."Excel File Name" := CopyStr(FileName, 1, 200);
+                        IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order", '', LineNo, '', 'Layout Error', '', FileName);
+                        IntegrationSales.Insert();
 
-                        end;
-
-                        if ValidateDate(GetValueAtCell(RowNo, 6)) then
-                            IntegrationSales."Posting Date" := GlobalDateYes
-                        else begin
-                            IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
-                            IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Posting Date"), 1, 50),
-                            CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 6), IntegrationSales."Excel File Name");
-
-                        end;
-
-                        if (StrLen(GetValueAtCell(RowNo, 8)) <= 20) then
-                            Evaluate(IntegrationSales."Customer Posting Group", GetValueAtCell(RowNo, 8))
-                        else begin
-                            IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
-                              IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Customer Posting Group"), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 8), IntegrationSales."Excel File Name");
-                        end;
-
-                        if ValidateDate(GetValueAtCell(RowNo, 9)) then
-                            IntegrationSales."Document Date" := GlobalDateYes
-                        else begin
-                            IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
-                            IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Document Date"), 1, 50),
-                            CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 9), IntegrationSales."Excel File Name");
-
-                        end;
-
-                        if (StrLen(GetValueAtCell(RowNo, 10)) <= 35) then
-                            Evaluate(IntegrationSales."External Document No.", GetValueAtCell(RowNo, 10))
-                        else begin
-                            IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
-                              IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("External Document No."), 1, 50),
-                              'Maximum 35 characters', GetValueAtCell(RowNo, 10), IntegrationSales."Excel File Name");
-                        end;
-
-                        IntegrationSales."Freight Billed To" := IntegrationSales."Freight Billed To"::"Without Freight";
-
-                        if (StrLen(GetValueAtCell(RowNo, 14)) <= 20) then
-                            Evaluate(IntegrationSales."Shortcut Dimension 1 Code", GetValueAtCell(RowNo, 14))
-                        else begin
-                            IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
-                              IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Shortcut Dimension 1 Code"), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 14), IntegrationSales."Excel File Name");
-                        end;
-
-                        if (StrLen(GetValueAtCell(RowNo, 15)) <= 20) then
-                            Evaluate(IntegrationSales."Shortcut Dimension 2 Code", GetValueAtCell(RowNo, 15))
-                        else begin
-                            IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
-                              IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Shortcut Dimension 2 Code"), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 15), IntegrationSales."Excel File Name");
-                        end;
-
-                        if (StrLen(GetValueAtCell(RowNo, 16)) <= 20) then
-                            Evaluate(IntegrationSales."Shortcut Dimension 3 Code", GetValueAtCell(RowNo, 16))
-                        else begin
-                            IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
-                              IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Shortcut Dimension 3 Code"), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 16), IntegrationSales."Excel File Name");
-                        end;
-
-                        if (StrLen(GetValueAtCell(RowNo, 17)) <= 20) then
-                            Evaluate(IntegrationSales."Shortcut Dimension 4 Code", GetValueAtCell(RowNo, 17))
-                        else begin
-                            IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
-                              IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Shortcut Dimension 4 Code"), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 17), IntegrationSales."Excel File Name");
-                        end;
-
-                        if (StrLen(GetValueAtCell(RowNo, 18)) <= 20) then
-                            Evaluate(IntegrationSales."Shortcut Dimension 5 Code", GetValueAtCell(RowNo, 18))
-                        else begin
-                            IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
-                              IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Shortcut Dimension 5 Code"), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 18), IntegrationSales."Excel File Name");
-                        end;
-
-                        if (StrLen(GetValueAtCell(RowNo, 19)) <= 20) then
-                            Evaluate(IntegrationSales."Shortcut Dimension 6 Code", GetValueAtCell(RowNo, 19))
-                        else begin
-                            IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
-                              IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Shortcut Dimension 6 Code"), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 19), IntegrationSales."Excel File Name");
-                        end;
-
-                        //Lines
-
-                        IntegrationSales.Type := IntegrationSales.Type::Item;
-
-                        if (StrLen(GetValueAtCell(RowNo, 22)) <= 20) and
-                            item.get(GetValueAtCell(RowNo, 22)) then
-                            Evaluate(IntegrationSales."Item No.", GetValueAtCell(RowNo, 22))
-                        else
-                            if item.get(GetValueAtCell(RowNo, 22)) then begin
-                                Evaluate(IntegrationSales."Item No.", GetValueAtCell(RowNo, 22));
-                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
-                                  IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Item No."), 1, 50),
-                                  'Maximum 20 characters', GetValueAtCell(RowNo, 22), IntegrationSales."Excel File Name")
-                            end else begin
-                                Evaluate(IntegrationSales."Item No.", GetValueAtCell(RowNo, 22));
-                                IntegrationSales.Status := IntegrationSales.Status::"Data Error";
-                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
-                                  IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Item No."), 1, 50),
-                                  'Error Item No.', GetValueAtCell(RowNo, 22), IntegrationSales."Excel File Name")
-                            end;
-
-
-                        if (StrLen(GetValueAtCell(RowNo, 25)) <= 100) then
-                            Evaluate(IntegrationSales.Description, GetValueAtCell(RowNo, 25))
-                        else begin
-                            IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
-                              IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption(Description), 1, 50),
-                              'Maximum 100 characters', GetValueAtCell(RowNo, 25), IntegrationSales."Excel File Name");
-                        end;
-
-                        if ValidateDecimal(GetValueAtCell(RowNo, 26)) then
-                            IntegrationSales.Quantity := GlobalDecimalYes
-                        else begin
-                            IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
-                            IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption(Quantity), 1, 50),
-                            CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 26), IntegrationSales."Excel File Name");
-
-                        end;
-
-                        if ValidateDecimal(GetValueAtCell(RowNo, 27)) then
-                            IntegrationSales."Unit Price" := GlobalDecimalYes
-                        else begin
-                            IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
-                            IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Unit Price"), 1, 50),
-                            CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 27), IntegrationSales."Excel File Name");
-
-                        end;
-
-                        if (StrLen(GetValueAtCell(RowNo, 34)) <= 20) then
-                            Evaluate(IntegrationSales."G/L Account", GetValueAtCell(RowNo, 34))
-                        else begin
-                            IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
-                              IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("G/L Account"), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 34), IntegrationSales."Excel File Name");
-                        end;
-
-                        if ValidateDecimal(GetValueAtCell(RowNo, 35)) then
-                            IntegrationSales."Tax From Billing APP (PIS)" := GlobalDecimalYes
-                        else
-                            if (GetValueAtCell(RowNo, 35) <> '') then begin
-                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
-                                IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Tax From Billing APP (PIS)"), 1, 50),
-                                CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 35), IntegrationSales."Excel File Name");
-
-                            end;
-
-                        if ValidateDecimal(GetValueAtCell(RowNo, 36)) then
-                            IntegrationSales."Tax From Billing APP (COFINS)" := GlobalDecimalYes
-                        else
-                            if (GetValueAtCell(RowNo, 36) <> '') then begin
-                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
-                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
-                                IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Tax From Billing APP (COFINS)"), 1, 50),
-                                CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 36), IntegrationSales."Excel File Name");
-
-                            end;
-
-                        if ExistLine then
-                            IntegrationSales.Modify()
-                        else
-                            if IntegrationSales.Insert() then;
-
-                        if IntegrationSales.Status = IntegrationSales.Status::"Data Excel Error" then
-                            ErrorFile := true;
                     end;
 
+                    if ErrorFile = false then
+                        for RowNo := 2 to MaxRowNo do begin
+                            LineNo := 0;
+                            ExistLine := false;
+
+                            if (StrLen(GetValueAtCell(RowNo, 2)) <= 20) and (GetValueAtCell(RowNo, 2) <> '') then begin
+
+                                if (IntSalesOld.Get(copystr(Filename, 1, 200), GetValueAtCell(RowNo, 2), GetValueAtCell(RowNo, 20))) then begin
+                                    //Not Modify Posted Line
+
+                                    ErrorFile := true;
+                                    IntegrationSales.Init();
+                                    IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                    Evaluate(IntegrationSales."No.", GetValueAtCell(RowNo, 2));
+                                    LineNoDupli -= 1;
+                                    IntegrationSales."Line No." := LineNoDupli;
+                                    IntegrationSales."Excel File Name" := copystr(Filename, 1, 200);
+
+                                    IntegrationSales."Posting Message" := StrSubstNo(DocOld02Err, IntegrationSales."No.", CopyStr(FileName, 1, 200));
+                                    IntSalesOld.Status := IntSalesOld.Status::"Data Excel Error";
+                                    IntSalesOld."Posting Message" := StrSubstNo(DocOld02Err, IntSalesOld."No.", CopyStr(FileName, 1, 200));
+                                    IntSalesOld.Modify();
+
+
+
+                                end else begin
+
+                                    IntSalesOld.Reset();
+                                    IntSalesOld.SetRange("No.", GetValueAtCell(RowNo, 2));
+                                    Evaluate(LineNo, GetValueAtCell(RowNo, 20));
+                                    IntSalesOld.SetRange("Line No.", LineNo);
+                                    if IntSalesOld.FindFirst() then begin
+                                        //Not Modify Posted Line
+
+                                        ErrorFile := true;
+                                        IntegrationSales.Init();
+                                        IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                        Evaluate(IntegrationSales."No.", GetValueAtCell(RowNo, 2));
+                                        Evaluate(IntegrationSales."Line No.", GetValueAtCell(RowNo, 20));
+                                        IntegrationSales."Excel File Name" := copystr(Filename, 1, 200);
+
+                                        if IntSalesOld.Status = IntSalesOld.Status::Posted then
+                                            IntegrationSales."Posting Message" := StrSubstNo(DocOld01Err, IntegrationSales."No.")
+                                        else
+                                            IntegrationSales."Posting Message" := StrSubstNo(DocOld02Err, IntegrationSales."No.", CopyStr(FileName, 1, 200));
+
+                                    end else begin
+
+                                        if SalesInvHeader.get(GetValueAtCell(RowNo, 2)) then begin
+
+                                            ErrorFile := true;
+                                            IntegrationSales.Init();
+                                            IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                            Evaluate(IntegrationSales."No.", GetValueAtCell(RowNo, 2));
+                                            Evaluate(IntegrationSales."Line No.", GetValueAtCell(RowNo, 20));
+                                            IntegrationSales."Excel File Name" := copystr(Filename, 1, 200);
+                                            IntegrationSales."Posting Message" := StrSubstNo(DocOld01Err, IntegrationSales."No.");
+
+                                        end else begin
+
+                                            IntegrationSales.Init();
+                                            IntegrationSales.Status := IntegrationSales.Status::Imported;
+                                            Evaluate(IntegrationSales."No.", GetValueAtCell(RowNo, 2));
+                                            Evaluate(IntegrationSales."Line No.", GetValueAtCell(RowNo, 20));
+                                            IntegrationSales."Excel File Name" := copystr(Filename, 1, 200);
+
+                                        end;
+                                    end;
+                                end;
+
+                            end else begin
+                                IntegrationSales.Init();
+                                Evaluate(IntegrationSales."No.", 'Errors-' + format(RowNo));
+                                Evaluate(IntegrationSales."Line No.", GetValueAtCell(RowNo, 20));
+                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                IntegrationSales."Excel File Name" := copystr(Filename, 1, 200);
+
+                                if (StrLen(GetValueAtCell(RowNo, 2)) > 20) then
+                                    IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                      IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("No."), 1, 50),
+                                      'Maximum 20 characters', GetValueAtCell(RowNo, 2), IntegrationSales."Excel File Name");
+
+                                if (GetValueAtCell(RowNo, 2) = '') then
+                                    IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                   IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("No."), 1, 50),
+                                   'Blank characters', GetValueAtCell(RowNo, 2), IntegrationSales."Excel File Name");
+
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 3)) <= 20) then
+                                Evaluate(IntegrationSales."Sell-to Customer No.", GetValueAtCell(RowNo, 3))
+                            else begin
+                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                  IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Sell-to Customer No."), 1, 50),
+                                  'Maximum 20 characters', GetValueAtCell(RowNo, 3), IntegrationSales."Excel File Name");
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 4)) <= 35) then
+                                Evaluate(IntegrationSales."Your Reference", GetValueAtCell(RowNo, 4))
+                            else begin
+                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                  IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Your Reference"), 1, 50),
+                                  'Maximum 35 characters', GetValueAtCell(RowNo, 4), IntegrationSales."Excel File Name");
+                            end;
+
+                            if ValidateDate(GetValueAtCell(RowNo, 5)) then
+                                IntegrationSales."Order Date" := GlobalDateYes
+                            else begin
+                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Order Date"), 1, 50),
+                                CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 5), IntegrationSales."Excel File Name");
+
+                            end;
+
+                            if ValidateDate(GetValueAtCell(RowNo, 6)) then
+                                IntegrationSales."Posting Date" := GlobalDateYes
+                            else begin
+                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Posting Date"), 1, 50),
+                                CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 6), IntegrationSales."Excel File Name");
+
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 8)) <= 20) then
+                                Evaluate(IntegrationSales."Customer Posting Group", GetValueAtCell(RowNo, 8))
+                            else begin
+                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                  IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Customer Posting Group"), 1, 50),
+                                  'Maximum 20 characters', GetValueAtCell(RowNo, 8), IntegrationSales."Excel File Name");
+                            end;
+
+                            if ValidateDate(GetValueAtCell(RowNo, 9)) then
+                                IntegrationSales."Document Date" := GlobalDateYes
+                            else begin
+                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Document Date"), 1, 50),
+                                CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 9), IntegrationSales."Excel File Name");
+
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 10)) <= 35) then
+                                Evaluate(IntegrationSales."External Document No.", GetValueAtCell(RowNo, 10))
+                            else begin
+                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                  IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("External Document No."), 1, 50),
+                                  'Maximum 35 characters', GetValueAtCell(RowNo, 10), IntegrationSales."Excel File Name");
+                            end;
+
+                            IntegrationSales."Freight Billed To" := IntegrationSales."Freight Billed To"::"Without Freight";
+
+                            if (StrLen(GetValueAtCell(RowNo, 14)) <= 20) then
+                                Evaluate(IntegrationSales."Shortcut Dimension 1 Code", GetValueAtCell(RowNo, 14))
+                            else begin
+                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
+                                  IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Shortcut Dimension 1 Code"), 1, 50),
+                                  'Maximum 20 characters', GetValueAtCell(RowNo, 14), IntegrationSales."Excel File Name");
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 15)) <= 20) then
+                                Evaluate(IntegrationSales."Shortcut Dimension 2 Code", GetValueAtCell(RowNo, 15))
+                            else begin
+                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
+                                  IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Shortcut Dimension 2 Code"), 1, 50),
+                                  'Maximum 20 characters', GetValueAtCell(RowNo, 15), IntegrationSales."Excel File Name");
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 16)) <= 20) then
+                                Evaluate(IntegrationSales."Shortcut Dimension 3 Code", GetValueAtCell(RowNo, 16))
+                            else begin
+                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
+                                  IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Shortcut Dimension 3 Code"), 1, 50),
+                                  'Maximum 20 characters', GetValueAtCell(RowNo, 16), IntegrationSales."Excel File Name");
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 17)) <= 20) then
+                                Evaluate(IntegrationSales."Shortcut Dimension 4 Code", GetValueAtCell(RowNo, 17))
+                            else begin
+                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
+                                  IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Shortcut Dimension 4 Code"), 1, 50),
+                                  'Maximum 20 characters', GetValueAtCell(RowNo, 17), IntegrationSales."Excel File Name");
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 18)) <= 20) then
+                                Evaluate(IntegrationSales."Shortcut Dimension 5 Code", GetValueAtCell(RowNo, 18))
+                            else begin
+                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
+                                  IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Shortcut Dimension 5 Code"), 1, 50),
+                                  'Maximum 20 characters', GetValueAtCell(RowNo, 18), IntegrationSales."Excel File Name");
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 19)) <= 20) then
+                                Evaluate(IntegrationSales."Shortcut Dimension 6 Code", GetValueAtCell(RowNo, 19))
+                            else begin
+                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
+                                  IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Shortcut Dimension 6 Code"), 1, 50),
+                                  'Maximum 20 characters', GetValueAtCell(RowNo, 19), IntegrationSales."Excel File Name");
+                            end;
+
+                            //Lines
+
+                            IntegrationSales.Type := IntegrationSales.Type::Item;
+
+                            if (StrLen(GetValueAtCell(RowNo, 22)) <= 20) and
+                                item.get(GetValueAtCell(RowNo, 22)) then
+                                Evaluate(IntegrationSales."Item No.", GetValueAtCell(RowNo, 22))
+                            else
+                                if item.get(GetValueAtCell(RowNo, 22)) then begin
+                                    Evaluate(IntegrationSales."Item No.", GetValueAtCell(RowNo, 22));
+                                    IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                    IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                      IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Item No."), 1, 50),
+                                      'Maximum 20 characters', GetValueAtCell(RowNo, 22), IntegrationSales."Excel File Name")
+                                end else begin
+                                    Evaluate(IntegrationSales."Item No.", GetValueAtCell(RowNo, 22));
+                                    IntegrationSales.Status := IntegrationSales.Status::"Data Error";
+                                    IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                      IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Item No."), 1, 50),
+                                      'Error Item No.', GetValueAtCell(RowNo, 22), IntegrationSales."Excel File Name")
+                                end;
+
+
+                            if (StrLen(GetValueAtCell(RowNo, 25)) <= 100) then
+                                Evaluate(IntegrationSales.Description, GetValueAtCell(RowNo, 25))
+                            else begin
+                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                  IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption(Description), 1, 50),
+                                  'Maximum 100 characters', GetValueAtCell(RowNo, 25), IntegrationSales."Excel File Name");
+                            end;
+
+                            if ValidateDecimal(GetValueAtCell(RowNo, 26)) then
+                                IntegrationSales.Quantity := GlobalDecimalYes
+                            else begin
+                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption(Quantity), 1, 50),
+                                CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 26), IntegrationSales."Excel File Name");
+
+                            end;
+
+                            if ValidateDecimal(GetValueAtCell(RowNo, 27)) then
+                                IntegrationSales."Unit Price" := GlobalDecimalYes
+                            else begin
+                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Unit Price"), 1, 50),
+                                CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 27), IntegrationSales."Excel File Name");
+
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 34)) <= 20) then
+                                Evaluate(IntegrationSales."G/L Account", GetValueAtCell(RowNo, 34))
+                            else begin
+                                IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                  IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("G/L Account"), 1, 50),
+                                  'Maximum 20 characters', GetValueAtCell(RowNo, 34), IntegrationSales."Excel File Name");
+                            end;
+
+                            if ValidateDecimal(GetValueAtCell(RowNo, 35)) then
+                                IntegrationSales."Tax From Billing APP (PIS)" := GlobalDecimalYes
+                            else
+                                if (GetValueAtCell(RowNo, 35) <> '') then begin
+                                    IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                    IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                    IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Tax From Billing APP (PIS)"), 1, 50),
+                                    CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 35), IntegrationSales."Excel File Name");
+
+                                end;
+
+                            if ValidateDecimal(GetValueAtCell(RowNo, 36)) then
+                                IntegrationSales."Tax From Billing APP (COFINS)" := GlobalDecimalYes
+                            else
+                                if (GetValueAtCell(RowNo, 36) <> '') then begin
+                                    IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
+                                    IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                    IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Tax From Billing APP (COFINS)"), 1, 50),
+                                    CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 36), IntegrationSales."Excel File Name");
+
+                                end;
+
+                            if IntegrationSales.Insert() then;
+
+                            if IntegrationSales.Status = IntegrationSales.Status::"Data Excel Error" then
+                                ErrorFile := true
+                            else
+                                IntSales.ValidateIntSales(IntegrationSales);
+                        end;
+
+                end;
 
                 if ErrorFile then
                     FTPCommunication.DoAction(Enum::"FTP Actions"::rename, FileName, FTPIntSetup.Directory, FTPIntSetup."Error Folder", '')

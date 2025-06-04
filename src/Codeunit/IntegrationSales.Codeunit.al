@@ -3,6 +3,7 @@ codeunit 50010 IntegrationSales
     procedure CreateSales(var intSales: Record IntegrationSales)
     var
         IntegrationSales: Record IntegrationSales;
+        IntegErros: Record IntegrationErros;
         DialogCreSalesLbl: label 'Create Sales Order   #1#############', Comment = '#1 IntegrationSales';
     begin
 
@@ -18,7 +19,15 @@ codeunit 50010 IntegrationSales
                     WindDialog.Update(1, IntegrationSales."No.");
 
                 IntegrationSales."Posting Message" := '';
+                IntegrationSales.Status := IntegrationSales.Status::Imported;
                 IntegrationSales.Modify();
+
+                IntegErros.Reset();
+                IntegErros.SetRange("Integration Type", IntegErros."Integration Type"::"Sales Order");
+                IntegErros.SetRange("Excel File Name", IntegrationSales."Excel File Name");
+                IntegErros.SetRange("Line No.", IntegrationSales."Line No.");
+                if IntegErros.FindSet() then
+                    IntegErros.DeleteAll();
 
                 if not ValidateIntSales(IntegrationSales) then;
 
@@ -44,6 +53,13 @@ codeunit 50010 IntegrationSales
 
                 IntegrationSales."Posting Message" := '';
                 IntegrationSales.Modify();
+
+                IntegErros.Reset();
+                IntegErros.SetRange("Integration Type", IntegErros."Integration Type"::"Sales Order");
+                IntegErros.SetRange("Excel File Name", IntegrationSales."Excel File Name");
+                IntegErros.SetRange("Line No.", IntegrationSales."Line No.");
+                if IntegErros.FindSet() then
+                    IntegErros.DeleteAll();
 
                 if not ValidateIntSales(IntegrationSales) then
                     CreateSalesOrder(IntegrationSales);
@@ -84,6 +100,7 @@ codeunit 50010 IntegrationSales
         IntSalesVal: Record IntegrationSales;
         TempTaxAmountLine: Record "CADBR Tax Amount Line" temporary;
         TaxCalculate: codeunit "CADBR Tax Calculate";
+        PISCofins01Err: label '-PIS/COFINS values from Billing App differ from those calculated by the system.', Comment = '%1 - Item No.';
 
     begin
 
@@ -195,34 +212,30 @@ codeunit 50010 IntegrationSales
 
         SalesReceivablesSetup.Get();
 
-        if IntSalesVal.Get(IntegrationSales."No.", 1) then begin
+        if IntSalesVal.Get(IntegrationSales."Excel File Name", IntegrationSales."No.", 1) then begin
 
             IntSalesVal.calcfields("Tax (COFINS) Order");
             IntSalesVal.calcfields("Tax (PIS) Order");
 
-            if (IntSalesVal."Tax (COFINS) Order" <> 0) and (IntSalesVal."Tax From Billing APP (COFINS)" = 0) then
-                IntegrationSales."Posting Message" += '-Dif COFINS error';
-
-            if (IntSalesVal."Tax (COFINS) Order" = 0) and (IntSalesVal."Tax From Billing APP (COFINS)" <> 0) then
-                IntegrationSales."Posting Message" += '-Dif COFINS error';
+            if ((IntSalesVal."Tax (COFINS) Order" <> 0) and (IntSalesVal."Tax From Billing APP (COFINS)" = 0)) or
+              ((IntSalesVal."Tax (COFINS) Order" = 0) and (IntSalesVal."Tax From Billing APP (COFINS)" <> 0)) then
+                IntegrationSales."Posting Message" := PISCofins01Err;
 
             if IntSalesVal."Tax (COFINS) Order" <> IntSalesVal."Tax From Billing APP (COFINS)" then
                 if IntSalesVal."Tax From Billing APP (COFINS)" <> 0 then
                     if Abs(1 - (IntSalesVal."Tax (COFINS) Order" / IntSalesVal."Tax From Billing APP (COFINS)")) >
                             SalesReceivablesSetup."Int Tax Difference Allowed" then
-                        IntegrationSales."Posting Message" += '-Dif COFINS error';
+                        IntegrationSales."Posting Message" := PISCofins01Err;
 
-            if (IntSalesVal."Tax (PIS) Order" <> 0) and (IntSalesVal."Tax From Billing APP (PIS)" = 0) then
-                IntegrationSales."Posting Message" += '-Dif COFINS error';
-
-            if (IntSalesVal."Tax (PIS) Order" = 0) and (IntSalesVal."Tax From Billing APP (PIS)" <> 0) then
-                IntegrationSales."Posting Message" += '-Dif COFINS error';
+            if ((IntSalesVal."Tax (PIS) Order" <> 0) and (IntSalesVal."Tax From Billing APP (PIS)" = 0)) or
+            ((IntSalesVal."Tax (PIS) Order" = 0) and (IntSalesVal."Tax From Billing APP (PIS)" <> 0)) then
+                IntegrationSales."Posting Message" := PISCofins01Err;
 
             if IntSalesVal."Tax (PIS) Order" <> IntSalesVal."Tax From Billing APP (PIS)" then
                 if IntSalesVal."Tax From Billing APP (PIS)" <> 0 then
                     if Abs(1 - (IntSalesVal."Tax (PIS) Order" / IntSalesVal."Tax From Billing APP (PIS)")) >
                             SalesReceivablesSetup."Int Tax Difference Allowed" then
-                        IntegrationSales."Posting Message" += '-Dif PIS error';
+                        IntegrationSales."Posting Message" := PISCofins01Err;
 
             if IntegrationSales."Posting Message" <> '' then
                 IntegrationSales.Status := IntegrationSales.Status::"Data Error";
@@ -242,21 +255,21 @@ codeunit 50010 IntegrationSales
     begin
         booHideDialog := true;
 
-        if SalesHeader.get(SalesHeader."Document Type"::Order, IntegrationSales."No.") then begin
+        if SalesHeader.get(SalesHeader."Document Type"::Order, IntegrationSales."No.") then//begin
             SalesPost.Run(SalesHeader);
-            IntegrationSales.Status := IntegrationSales.Status::Posted;
-            IntegrationSales.Modify();
-        end else
-            if IntegrationSales.Status <> IntegrationSales.Status::Posted then begin
-                IntSales.Reset();
-                IntSales.SetRange("No.", IntegrationSales."No.");
-                if IntSales.FindFirst() then
-                    if IntSales.Status = IntSales.Status::Posted then begin
-                        IntegrationSales.Status := IntegrationSales.Status::Posted;
-                        IntegrationSales.Modify();
+        // IntegrationSales.Status := IntegrationSales.Status::Posted;
+        // IntegrationSales.Modify();
+        // end else
+        //     if IntegrationSales.Status <> IntegrationSales.Status::Posted then begin
+        //         IntSales.Reset();
+        //         IntSales.SetRange("No.", IntegrationSales."No.");
+        //         if IntSales.FindFirst() then
+        //             if IntSales.Status = IntSales.Status::Posted then begin
+        //                 IntegrationSales.Status := IntegrationSales.Status::Posted;
+        //                 IntegrationSales.Modify();
 
-                    end;
-            end;
+        //             end;
+        // end;
 
     end;
 
@@ -264,30 +277,50 @@ codeunit 50010 IntegrationSales
     var
         Customer: Record Customer;
         Item: Record Item;
+        TaxSetupSalesPurchase: Record "CADBR Tax Setup Sales Purchase";
         GeneralPostingSetup: Record "General Posting Setup";
         GLAccount: Record "G/L Account";
         Usgaap: Record "From/To US GAAP";
+        UserSetup: codeunit "User Setup Management";
+        IntSalesOld: Record "IntegrationSales";
+        ErrorDate: Text;
         Cust01Err: label 'Customer %1 Not Found', Comment = '%1 - Customer No.';
         Item01Err: label ' - Item %1 Not Found', Comment = '%1 - Item No.';
         GL01Err: label ' - G/L Account not sent by GP';
         GL02Err: label ' - G/L Account GP %1 different from G/L Account %2', Comment = '%1 - G/L Accoun No. , %2 - G/L Accoun No.';
-
+        UnitPrice01Err: label 'Sales Order %1 has total value equal to zero.', Comment = '%1 - Item No.';
+        TaxSetup01Err: label 'Automatic Tax Area Config. not registered for Item %1.', Comment = '%1 - Item No.';
+        DocOld01Err: label 'Sales Order with Document No. %1 already imported.', Comment = '%1 - Document No.';
+        TextError: Text[1024];
     begin
+        Clear(TextError);
 
-        if not Customer.Get(IntegrationSales."Sell-to Customer No.") then begin
-            IntegrationSales."Posting Message" := StrSubstNo(Cust01Err, IntegrationSales."Sell-to Customer No.");
-            IntegrationSales.Modify();
+        IntSalesOld.Reset();
+        IntSalesOld.SetFilter("Excel File Name", '<>%1', IntegrationSales."Excel File Name");
+        IntSalesOld.SetRange("No.", IntegrationSales."No.");
+        if IntSalesOld.FindFirst() then
+            TextError += StrSubstNo(DocOld01Err, IntegrationSales."No.");
+
+
+        if not Customer.Get(IntegrationSales."Sell-to Customer No.") then
+            TextError += StrSubstNo(Cust01Err, IntegrationSales."Sell-to Customer No.");
+
+
+        if not Item.get(IntegrationSales."Item No.") then
+            TextError += StrSubstNo(Item01Err, IntegrationSales."Item No.")
+        else begin
+            TaxSetupSalesPurchase.Reset();
+            TaxSetupSalesPurchase.SetRange("Branch Code", IntegrationSales."Shortcut Dimension 6 Code");
+            TaxSetupSalesPurchase.SetRange(Goal, TaxSetupSalesPurchase.Goal::Sales);
+            TaxSetupSalesPurchase.SetRange("Item Code Ncm", IntegrationSales."Item No.");
+            if not TaxSetupSalesPurchase.FindFirst() then
+                TextError += StrSubstNo(TaxSetup01Err, IntegrationSales."Item No.");
+
         end;
 
-        if not Item.get(IntegrationSales."Item No.") then begin
-            IntegrationSales."Posting Message" += StrSubstNo(Item01Err, IntegrationSales."Item No.");
-            IntegrationSales.Modify();
-        end;
-
-        if IntegrationSales."G/L Account" = '' then begin
-            IntegrationSales."Posting Message" += GL01Err;
-            IntegrationSales.Modify();
-        end else
+        if IntegrationSales."G/L Account" = '' then
+            TextError += GL01Err
+        else
             if GeneralPostingSetup.get(Customer."Gen. Bus. Posting Group", Item."Gen. Prod. Posting Group") then
                 if GLAccount.Get(GeneralPostingSetup."Sales Account") then
                     if (GLAccount."No. 2" <> IntegrationSales."G/L Account") then begin
@@ -295,10 +328,17 @@ codeunit 50010 IntegrationSales
                         Usgaap.SetRange("US GAAP", IntegrationSales."G/L Account");
                         Usgaap.SetRange("BR GAAP", GeneralPostingSetup."Sales Account");
                         if not Usgaap.FindFirst() then begin
-                            IntegrationSales."Posting Message" += StrSubstNo(GL02Err, IntegrationSales."G/L Account", GeneralPostingSetup."Sales Account");
+                            TextError += StrSubstNo(GL02Err, IntegrationSales."G/L Account", GeneralPostingSetup."Sales Account");
                             IntegrationSales.Modify();
                         end;
                     end;
+
+        if IntegrationSales."Unit Price" = 0 then
+            TextError += StrSubstNo(UnitPrice01Err, IntegrationSales."External Document No.");
+
+
+        if not UserSetup.TestAllowedPostingDate(IntegrationSales."Posting Date", ErrorDate) then
+            TextError += CopyStr(ErrorDate, 1, 200);
 
         if IntegrationSales."Shortcut Dimension 1 Code" <> '' then
             if not ValidateDim(1, IntegrationSales."Shortcut Dimension 1 Code") then
@@ -324,7 +364,8 @@ codeunit 50010 IntegrationSales
             if not ValidateDim(6, IntegrationSales."Shortcut Dimension 6 Code") then
                 CreateDim(6, IntegrationSales."Shortcut Dimension 6 Code");
 
-        if IntegrationSales."Posting Message" <> '' then begin
+        if TextError <> '' then begin
+            IntegrationSales."Posting Message" := CopyStr(TextError, 1, 200);
             IntegrationSales.Status := IntegrationSales.Status::"Data Error";
             IntegrationSales.Modify();
 
@@ -393,6 +434,21 @@ codeunit 50010 IntegrationSales
     local procedure OnBeforeCheckHeaderPostingTypeSalesPost(var IsHandled: Boolean)
     begin
         IsHandled := booIsHandled;
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", 'OnAfterPostSalesDoc', '', false, false)]
+    local procedure PostOnAfterPostSalesDoc(var SalesHeader: Record "Sales Header"; SalesInvHdrNo: Code[20])
+    var
+        IntSales: Record IntegrationSales;
+    begin
+
+        IntSales.Reset();
+        IntSales.SetRange("No.", SalesHeader."No.");
+        if IntSales.FindFirst() then begin
+            IntSales.ModifyAll("Posting Message", '');
+            IntSales.ModifyAll(Status, IntSales.Status::Posted);
+        end;
+
     end;
 
     var
