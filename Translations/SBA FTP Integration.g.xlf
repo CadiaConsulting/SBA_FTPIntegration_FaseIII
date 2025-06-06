@@ -11143,6 +11143,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension REINF Settlement - R4010 - Action ProcessJudInfRRA - Property Caption</note>
         </trans-unit>
+        <trans-unit id="PageExtension 1909477854 - Control 3971433691 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2476585294">
+          <source>Totals</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA CADBR CNAB Payment - Control Totals - Property Caption</note>
+        </trans-unit>
         <trans-unit id="PageExtension 1909477854 - Control 979743402 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2476585294">
           <source>Amount Total</source>
           <note from="Developer" annotates="general" priority="2"></note>

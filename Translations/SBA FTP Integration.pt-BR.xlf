@@ -10176,6 +10176,102 @@
           <note from="Developer" annotates="general" priority="2">%1 - Document No.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Import Excel Buffer - Method ImportExcelSales - NamedType DocOld02Err</note>
         </trans-unit>
+        <trans-unit id="PageExtension 1909477854 - Control 3971433691 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2476585294">
+          <source>Totals</source>
+          <target>Totais</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA CADBR CNAB Payment - Control Totals - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1909477854 - Control 979743402 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2476585294">
+          <source>Amount Total</source>
+          <target>Total Valor</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA CADBR CNAB Payment - Control Amount Total - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1909477854 - Control 3943350736 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2476585294">
+          <source>Charge Amount Total</source>
+          <target>Total Valor Multa</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA CADBR CNAB Payment - Control Charge Amount Total - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1909477854 - Control 267852877 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2476585294">
+          <source>Discount Amount Total</source>
+          <target>Total Valor Desconto </target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA CADBR CNAB Payment - Control Discount Amount Total - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1909477854 - Control 1963167684 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2476585294">
+          <source>Interest Amount Total</source>
+          <target>Total Valor Juros/Multa</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA CADBR CNAB Payment - Control Interest Amount Total - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1909477854 - Control 2731490539 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2476585294">
+          <source>Net Amount Total</source>
+          <target>Total Valor Líquido</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA CADBR CNAB Payment - Control Net Amount Total - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1909477854 - Control 2515545170 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2476585294">
+          <source>Qty Total</source>
+          <target>Total Quantidade</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA CADBR CNAB Payment - Control Qty Total - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 1909477854 - Control 3420332607 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2476585294">
+          <source>Retained Taxes Total</source>
+          <target>Total Impostos Retidos</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA CADBR CNAB Payment - Control Retained Taxes Total - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 1909477854 - Field 979743402 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2476585294">
+          <source>Amount Total</source>
+          <target>Total Valor</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA CADBR CNAB Payment - Field Amount Total - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 1909477854 - Field 3943350736 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2476585294">
+          <source>Charge Amount Total</source>
+          <target>Total Valor Multa</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA CADBR CNAB Payment - Field Charge Amount Total - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 1909477854 - Field 267852877 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2476585294">
+          <source>Discount Amount Total</source>
+          <target>Total Valor Desconto </target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA CADBR CNAB Payment - Field Discount Amount Total - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 1909477854 - Field 1963167684 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2476585294">
+          <source>Interest Amount Total</source>
+          <target>Total Valor Juros/Multa</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA CADBR CNAB Payment - Field Interest Amount Total - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 1909477854 - Field 2731490539 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2476585294">
+          <source>Net Amount Total</source>
+          <target>Total Valor Líquido</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA CADBR CNAB Payment - Field Net Amount Total - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 1909477854 - Field 2515545170 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2476585294">
+          <source>Qty Total</source>
+          <target>Total Quantidade</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA CADBR CNAB Payment - Field Qty Total - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 1909477854 - Field 3420332607 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2476585294">
+          <source>Retained Taxes Total</source>
+          <target>Total Impostos Retidos</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA CADBR CNAB Payment - Field Retained Taxes Total - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 1545619430 - Field 712568034 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 1570665720">
+          <source>Documents Applies</source>
+          <target>Documentos Aplicados</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA CNAB Payment Line - Field Documents Applies - Property Caption</note>
+        </trans-unit>
       </group>
     </body>
   </file>
