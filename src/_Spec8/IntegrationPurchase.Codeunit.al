@@ -1883,6 +1883,10 @@ codeunit 50013 "Integration Purchase"
         CSTImpostos: Record "CADBR CST Impostos";
         TaxAreaLine: Record "Tax Area Line";
         ServiceCode: Record "CADBR NFS Service Code";
+        Item: Record Item;
+        ItemNew: Record Item;
+        ItemUnitofMeasure: Record "Item Unit of Measure";
+        NewItemUnitofMeasure: Record "Item Unit of Measure";
         DocumentAlreadyExists: label 'The %1 document no. already exists for Vendor %2 - %3.';
         DocumentAndSerieAlreadyExists: label 'The Document No. %1 and Print Serie %2 already exists for Vendor %3 - %4.';
         DocumentSerieAndFiscalDocTypeAlreadyExists: label 'The Document No. %1, Print Serie %2 and Fiscal Doc. Type %3 already exists for Vendor %4 - %5.';
@@ -1900,10 +1904,11 @@ codeunit 50013 "Integration Purchase"
         Label50012: Label 'The information of CTS PIS or COFINS is different from the Tax Area Code please adjust.';
         Label50013: Label 'The Service Code must have a value in Line. Please select a valid service code from the registered list.';
         Label50015: Label 'The Service Code does not exist in Table. Please select a valid service code from the registered list.';
+        Label50016: Label 'NCM Code not filled in for the Indicated Tax Document Type.';
         PrintSerie: Integer;
         InvoiceNo: Integer;
-
-
+        NCMItemBoo: Boolean;
+        NewItem: Code[50];
     begin
         PurchSetup.Get;
 
@@ -1993,6 +1998,61 @@ codeunit 50013 "Integration Purchase"
                     else
                         if not ServiceCode.Get(PurcLine."CADBR Service Code") then
                             PurchaseHeader."Posting Message" := Label50015;
+
+                end;
+
+                if (PurchaseHeader."CADBR Fiscal Document Type" <> '') and (FiscalDoc.Get(PurchaseHeader."CADBR Fiscal Document Type")) and
+                                (FiscalDoc."Document Model" = '55') then begin
+
+                    if CSTImpostos.get(CSTImpostos."Tax Type"::PIS, PurcLine."CADBR PIS CST Code") then
+                        if CSTImpostos."Tax Credit" then
+                            if PurcLine."CADBR NCM Code" = '' then
+                                PurchaseHeader."Posting Message" := Label50016
+                            else
+                                NCMItemBoo := true;
+
+                    if CSTImpostos.get(CSTImpostos."Tax Type"::COFINS, PurcLine."CADBR COFINS CST Code") then
+                        if CSTImpostos."Tax Credit" then
+                            if PurcLine."CADBR NCM Code" = '' then
+                                PurchaseHeader."Posting Message" := Label50016
+                            else
+                                NCMItemBoo := true;
+
+                    if NCMItemBoo then begin
+                        NewItem := PurcLine."No." + '.' + PurcLine."CADBR NCM Code";
+
+                        if (PurcLine."No." <> NewItem) and (PurcLine."Original Item" = '') then begin
+                            if Item.get(NewItem) then begin
+                                PurcLine."Original Item" := PurcLine."No.";
+                                PurcLine."No." := NewItem;
+                                PurcLine.Modify();
+                            end else begin
+                                Item.get(PurcLine."No.");
+                                ItemNew.Init();
+                                ItemNew.TransferFields(Item);
+                                ItemNew."No." := NewItem;
+                                Itemnew.Type := ItemNew.Type::"Non-Inventory";
+                                ItemNew."CADBR Non-Stock Item" := true;
+                                ItemNew."CADBR Service" := false;
+                                ItemNew.Insert();
+
+                                if ItemUnitofMeasure.Get(PurcLine."No.", Item."Sales Unit of Measure") then begin
+                                    newItemUnitofMeasure.Init();
+                                    NewItemUnitofMeasure.TransferFields(ItemUnitofMeasure);
+                                    NewItemUnitofMeasure."Item No." := ItemNew."No.";
+                                    NewItemUnitofMeasure.Insert();
+                                end;
+
+                                Commit();
+
+                                PurcLine."Original Item" := PurcLine."No.";
+                                PurcLine."No." := ItemNew."No.";
+                                purcLine.Modify();
+
+                            end;
+
+                        end;
+                    end;
 
                 end;
 

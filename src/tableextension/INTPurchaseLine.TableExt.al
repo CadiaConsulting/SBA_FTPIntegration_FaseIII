@@ -9,5 +9,10 @@ tableextension 50009 INTPurchaseLine extends "Purchase Line"
             FieldClass = Normal;
             Editable = false;
         }
+        field(50001; "Original Item"; Code[20])
+        {
+            Caption = 'Original Item';
+            Editable = false;
+        }
     }
 }

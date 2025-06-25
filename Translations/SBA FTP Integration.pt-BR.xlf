@@ -10272,6 +10272,186 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA CNAB Payment Line - Field Documents Applies - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Codeunit 1853925422 - Method 4049767876 - NamedType 131137895" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Integration File already imported %1.</source>
+          <target>Arquivo de Integração já Importado Anteriormente %1</target>
+          <note from="Developer" annotates="general" priority="2">%1 - File</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Import Excel Buffer - Method ImportExcelSalesReturn - NamedType FileOld01Err</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1853925422 - Method 4049767876 - NamedType 1168044693" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Sales Credit Order with Document No. %1 already imported.</source>
+          <target>Nota de Crédito com Nº do documento %1 já importado.</target>
+          <note from="Developer" annotates="general" priority="2">%1 - Document No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Import Excel Buffer - Method ImportExcelSalesReturn - NamedType DocOld01Err</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1853925422 - Method 4049767876 - NamedType 3631401444" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Sales Credit Order and Line with Document No. %1 already imported to File %2.</source>
+          <target>Nota de Crédito com linha com Nº do documento %1 Duplicado no Arquivo %2.</target>
+          <note from="Developer" annotates="general" priority="2">%1 - Document No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Import Excel Buffer - Method ImportExcelSalesReturn - NamedType DocOld02Err</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4134644754 - Method 3468255849 - NamedType 889073484" size-unit="char" translate="yes" xml:space="preserve">
+          <source>-PIS/COFINS values from Billing App differ from those calculated by the system.</source>
+          <target>-Valores de PIS/COFINS do Billing App diferentes dos calculados pelo sistema.</target>
+          <note from="Developer" annotates="general" priority="2">%1 - Item No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntSalesCreditNote - Method CreateSalesCreditOrder - NamedType PISCofins01Err</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4134644754 - Method 663930004 - NamedType 1813653849" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Sales Credit Order %1 has total value equal to zero.</source>
+          <target>Nota de Crédito %1 com valor total igual a zero.</target>
+          <note from="Developer" annotates="general" priority="2">%1 - Item No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntSalesCreditNote - Method ValidateIntSalesCredit - NamedType UnitPrice01Err</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4134644754 - Method 663930004 - NamedType 2726945802" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Automatic Tax Area Config. not registered for Item %1.</source>
+          <target>Config. Área Impostos Automática não cadastrada para o Item %1.</target>
+          <note from="Developer" annotates="general" priority="2">%1 - Item No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntSalesCreditNote - Method ValidateIntSalesCredit - NamedType TaxSetup01Err</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4134644754 - Method 663930004 - NamedType 1168044693" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Sales Credit Order with Document No. %1 already imported.</source>
+          <target>Nota de Crédito com Nº do documento %1 já importado.</target>
+          <note from="Developer" annotates="general" priority="2">%1 - Document No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntSalesCreditNote - Method ValidateIntSalesCredit - NamedType DocOld01Err</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4134644754 - Method 663930004 - NamedType 2985837186" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tax Matrix not registered for the Client %1.</source>
+          <target>Matriz de Imposto não cadastrada para o Cliente %1.</target>
+          <note from="Developer" annotates="general" priority="2">%1 - Document No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntSalesCreditNote - Method ValidateIntSalesCredit - NamedType Cust02Err</note>
+        </trans-unit>
+        <trans-unit id="Report 2846668054 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>General Ledger Complete</source>
+          <target>Razão Geral Completo</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report General Ledger Complete - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Report 2846668054 - NamedType 876314387" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Branch Code cannot be Empty</source>
+          <target>Cod Filial não pode ser vazio</target>
+          <note from="Developer" annotates="general" priority="2">Branch Code</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report General Ledger Complete - NamedType ErrorTextBranc</note>
+        </trans-unit>
+        <trans-unit id="Report 2846668054 - NamedType 2892537294" size-unit="char" translate="yes" xml:space="preserve">
+          <source>End Date cannot be Empty</source>
+          <target>Data Final não pode ser vazio e nem Menor que a Inicial</target>
+          <note from="Developer" annotates="general" priority="2">End Date</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report General Ledger Complete - NamedType ErrorTextEnd</note>
+        </trans-unit>
+        <trans-unit id="Report 2846668054 - NamedType 990048647" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Start Date cannot be Empty</source>
+          <target>Data Inicial não pode ser vazio e nem Menor que a Final</target>
+          <note from="Developer" annotates="general" priority="2">Start Date</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report General Ledger Complete - NamedType ErrorTextStart</note>
+        </trans-unit>
+        <trans-unit id="Report 2846668054 - Control 390722123 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Branch Code</source>
+          <target>Cod Filial</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report General Ledger Complete - Control BranchCode - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Report 2846668054 - Control 845401037 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>End Date</source>
+          <target>Data Final</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report General Ledger Complete - Control EndDate - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Report 2846668054 - Control 3605153064 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Start Date</source>
+          <target>Data Inicial</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report General Ledger Complete - Control StartDate - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2502447 - NamedType 2476940767" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Processing #1 of #2</source>
+          <target>Processando #1 de #2</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit GLEntry File Export - NamedType Text000</note>
+        </trans-unit>
+        <trans-unit id="Report 3223301929 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>General Ledger Reduced</source>
+          <target>Razão Geral Reduzido</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report General Ledger Reduced - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Report 3223301929 - NamedType 876314387" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Branch Code cannot be Empty</source>
+          <target>Cod Filial não pode ser Vazio</target>
+          <note from="Developer" annotates="general" priority="2">Branch Code</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report General Ledger Reduced - NamedType ErrorTextBranc</note>
+        </trans-unit>
+        <trans-unit id="Report 3223301929 - NamedType 2892537294" size-unit="char" translate="yes" xml:space="preserve">
+          <source>End Date cannot be Empty</source>
+          <target>Data Final não pode ser vazio e nem Menor que a Inicial</target>
+          <note from="Developer" annotates="general" priority="2">End Date</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report General Ledger Reduced - NamedType ErrorTextEnd</note>
+        </trans-unit>
+        <trans-unit id="Report 3223301929 - NamedType 990048647" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Start Date cannot be Empty</source>
+          <target>Data Inicial não pode ser vazio e nem Menor que a Final</target>
+          <note from="Developer" annotates="general" priority="2">Start Date</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report General Ledger Reduced - NamedType ErrorTextStart</note>
+        </trans-unit>
+        <trans-unit id="Report 3223301929 - Control 390722123 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Branch Code</source>
+          <target>Cod. Filial</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report General Ledger Reduced - Control BranchCode - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Report 3223301929 - Control 845401037 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>End Date</source>
+          <target>Data Final</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report General Ledger Reduced - Control EndDate - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Report 3223301929 - Control 3605153064 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Start Date</source>
+          <target>Data Inicial</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report General Ledger Reduced - Control StartDate - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2978460121 - Action 2588201939 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3105459369">
+          <source>General Ledger Complete</source>
+          <target>Razão Geral Completo</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA Chart of Accounts - Action Complete - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2978460121 - Action 2244128303 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3105459369">
+          <source>General Ledger Reduced</source>
+          <target>Razão Geral Reduzido</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA Chart of Accounts - Action Reduzed - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Report 3223301929 - Control 4105281732 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Options</source>
+          <target>Opções</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report General Ledger Reduced - Control GroupName - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Report 2846668054 - Control 4105281732 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Options</source>
+          <target>Opções</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report General Ledger Complete - Control GroupName - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 3809817000" size-unit="char" translate="yes" xml:space="preserve">
+          <source>NCM Code not filled in for the Indicated Tax Document Type.</source>
+          <target>Código NCM não preenchido para o Tipo de Documento Fiscal Indicado</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50016</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 312826912 - Action 1607644801 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 526152577">
+          <source>Update NCM Code</source>
+          <target>Atualizar NCM Code</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderSubForm - Action UpdateLineNCM - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 312826912 - Action 1607644801 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 526152577">
+          <source>Update NCM Code</source>
+          <target>Atualizar NCM Code</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderSubForm - Action UpdateLineNCM - Property Caption</note>
+        </trans-unit>
       </group>
     </body>
   </file>
