@@ -188,6 +188,11 @@ codeunit 50017 "Codeunits Events"
 
         PurchaseHeader."Posting No." := '';
 
+        intPur.Reset();
+        intPur.SetRange("Document No.", PurchaseHeader."No.");
+        if intPur.FindFirst() then
+            intPur.DeleteAll();
+
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Release Purchase Document", 'OnAfterManualReopenPurchaseDoc', '', false, false)]
@@ -323,6 +328,35 @@ codeunit 50017 "Codeunits Events"
         if PurchaseHeader.Status = PurchaseHeader.Status::Open then begin
             Clear(PurchaseHeader."CADBR Release Date");
         end;
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"CADBR CNAB Export", 'OnBeforeRun', '', false, false)]
+    local procedure Codeunit_52007100_OnAfterManualReleasePurchaseDoc(var CNABPayment: Record "CADBR CNAB Payment")
+    var
+        paymentLine: Record "CADBR CNAB Payment Line";
+        ShortcutDimCode: Code[20];
+        glSetup: Record "General Ledger Setup";
+        dimSetEntry: Record "Dimension Set Entry";
+        glSetupShortcutDimCode: Code[20];
+        Dime01Err: label 'The US GAAP column was not filled in. Please provide the US Accounting Account (US GAAP) for Process Sequence.', Comment = '%1 - Item No.';
+
+    begin
+        glSetup.Get();
+        glSetupShortcutDimCode := glSetup."Shortcut Dimension 5 Code";
+
+        paymentLine.Reset();
+        paymentLine.SetRange("CNAB Payment No.", CNABPayment."No.");
+        if paymentLine.FindSet() then
+            repeat
+                Clear(ShortcutDimCode);
+                if glSetupShortcutDimCode <> '' then
+                    if dimSetEntry.Get(paymentLine."Dimension Set ID", glSetupShortcutDimCode) then
+                        ShortcutDimCode := dimSetEntry."Dimension Value Code";
+
+                if ShortcutDimCode = '' then
+                    error(Dime01Err);
+
+            until paymentLine.Next() = 0;
     end;
 
 

@@ -3,6 +3,7 @@ codeunit 50012 IntSalesCreditNote
     procedure CreateSalesCredit(var InsSalescred: Record IntSalesCreditNote)
     var
         IntSalesCreditNote: Record IntSalesCreditNote;
+        IntegErros: Record IntegrationErros;
         DialogCreSalesLbl: label 'Create Sales Return Order   #1#############', Comment = '#1 IntegrationSalesReturn';
     begin
 
@@ -18,7 +19,15 @@ codeunit 50012 IntSalesCreditNote
                     WindDialog.Update(1, IntSalesCreditNote."No.");
 
                 IntSalesCreditNote."Posting Message" := '';
+                IntSalesCreditNote.Status := IntSalesCreditNote.Status::Imported;
                 IntSalesCreditNote.Modify();
+
+                IntegErros.Reset();
+                IntegErros.SetRange("Integration Type", IntegErros."Integration Type"::"Sales Return Order");
+                IntegErros.SetRange("Excel File Name", IntSalesCreditNote."Excel File Name");
+                IntegErros.SetRange("Line No.", IntSalesCreditNote."Line No.");
+                if IntegErros.FindSet() then
+                    IntegErros.DeleteAll();
 
                 if not ValidateIntSalesCredit(IntSalesCreditNote) then;
 
@@ -32,8 +41,8 @@ codeunit 50012 IntSalesCreditNote
         IntSalesCreditNote.CopyFilters(InsSalescred);
         IntSalesCreditNote.SetFilter(Status, '%1|%2', IntSalesCreditNote.Status::Imported,
                                                    IntSalesCreditNote.Status::"Data Error");
-        IntSalesCreditNote.CalcFields("Error Order");
-        IntSalesCreditNote.SetFilter("Error Order", '%1', 0);
+        //IntSalesCreditNote.CalcFields("Error Order");
+        //IntSalesCreditNote.SetFilter("Error Order", '%1', 0);
         if IntSalesCreditNote.Find('-') then begin
             if GuiAllowed then
                 WindDialog.Open(DialogCreSalesLbl);
@@ -43,6 +52,13 @@ codeunit 50012 IntSalesCreditNote
 
                 IntSalesCreditNote."Posting Message" := '';
                 IntSalesCreditNote.Modify();
+
+                IntegErros.Reset();
+                IntegErros.SetRange("Integration Type", IntegErros."Integration Type"::"Sales Order");
+                IntegErros.SetRange("Excel File Name", IntSalesCreditNote."Excel File Name");
+                IntegErros.SetRange("Line No.", IntSalesCreditNote."Line No.");
+                if IntegErros.FindSet() then
+                    IntegErros.DeleteAll();
 
                 if not ValidateIntSalesCredit(IntSalesCreditNote) then
                     CreateSalesCreditOrder(IntSalesCreditNote);
@@ -84,6 +100,8 @@ codeunit 50012 IntSalesCreditNote
         TaxConfig: Record "CADBR Tax Setup Sales Purchase";
         TempTaxAmountLine: Record "CADBR Tax Amount Line" temporary;
         TaxCalculate: codeunit "CADBR Tax Calculate";
+        PISCofins01Err: label '-PIS/COFINS values from Billing App differ from those calculated by the system.', Comment = '%1 - Item No.';
+
     begin
 
         SalesHeader.Reset();
@@ -332,42 +350,48 @@ codeunit 50012 IntSalesCreditNote
         end;
 
         SalesReceivablesSetup.Get();
-        if IntSalesCredi.Get(IntSalesCreditNote."No.", 1) then begin
 
-            IntSalesCredi.Calcfields("Tax (COFINS) Order");
-            IntSalesCredi.Calcfields("Tax (PIS) Order");
+        IntSalesCredi.Reset();
+        IntSalesCredi.SetRange("Excel File Name", IntSalesCreditNote."Excel File Name");
+        IntSalesCredi.SetRange("No.", IntSalesCreditNote."No.");
+        if IntSalesCredi.FindLast() and (IntSalesCredi."Line No." = IntSalescreditNote."Line No.") then
+            if IntSalesCredi.Get(IntSalesCreditNote."Excel File Name", IntSalesCreditNote."No.", 1) then begin
 
-            if (IntSalesCredi."Tax (COFINS) Order" <> 0) and (IntSalesCredi."Tax From Billing APP (COFINS)" = 0) then
-                IntSalesCreditNote."Posting Message" += '-Dif COFINS error';
+                IntSalesCredi.Calcfields("Tax (COFINS) Order");
+                IntSalesCredi.Calcfields("Tax (PIS) Order");
 
-            if (IntSalesCredi."Tax (COFINS) Order" = 0) and (IntSalesCredi."Tax From Billing APP (COFINS)" <> 0) then
-                IntSalesCreditNote."Posting Message" += '-Dif COFINS error';
+                if ((IntSalesCredi."Tax (COFINS) Order" <> 0) and (IntSalesCredi."Tax From Billing APP (COFINS)" = 0)) or
+                    ((IntSalesCredi."Tax (COFINS) Order" = 0) and (IntSalesCredi."Tax From Billing APP (COFINS)" <> 0)) then
+                    IntSalesCreditNote."Posting Message" := PISCofins01Err;
 
-            if IntSalesCredi."Tax (COFINS) Order" <> IntSalesCredi."Tax From Billing APP (COFINS)" then
-                if IntSalesCredi."Tax From Billing APP (COFINS)" <> 0 then
-                    if Abs(1 - (IntSalesCredi."Tax (COFINS) Order" / IntSalesCredi."Tax From Billing APP (COFINS)")) >
-                            SalesReceivablesSetup."Int Tax Difference Allowed" then
-                        IntSalesCreditNote."Posting Message" += '-Dif COFINS error';
+                if IntSalesCredi."Tax (COFINS) Order" <> IntSalesCredi."Tax From Billing APP (COFINS)" then
+                    if IntSalesCredi."Tax From Billing APP (COFINS)" <> 0 then
+                        if Abs(1 - (IntSalesCredi."Tax (COFINS) Order" / IntSalesCredi."Tax From Billing APP (COFINS)")) >
+                                SalesReceivablesSetup."Int Tax Difference Allowed" then
+                            IntSalesCreditNote."Posting Message" := PISCofins01Err;
 
+                if ((IntSalesCredi."Tax (PIS) Order" <> 0) and (IntSalesCredi."Tax From Billing APP (PIS)" = 0)) or
+                ((IntSalesCredi."Tax (PIS) Order" = 0) and (IntSalesCredi."Tax From Billing APP (PIS)" <> 0)) then
+                    IntSalesCreditNote."Posting Message" := PISCofins01Err;
 
-            if (IntSalesCredi."Tax (PIS) Order" <> 0) and (IntSalesCredi."Tax From Billing APP (PIS)" = 0) then
-                IntSalesCreditNote."Posting Message" += '-Dif COFINS error';
+                if IntSalesCredi."Tax (PIS) Order" <> IntSalesCredi."Tax From Billing APP (PIS)" then
+                    if IntSalesCredi."Tax From Billing APP (PIS)" <> 0 then
+                        if Abs(1 - (IntSalesCredi."Tax (PIS) Order" / IntSalesCredi."Tax From Billing APP (PIS)")) >
+                                SalesReceivablesSetup."Int Tax Difference Allowed" then
+                            IntSalesCreditNote."Posting Message" := PISCofins01Err;
 
-            if (IntSalesCredi."Tax (PIS) Order" = 0) and (IntSalesCredi."Tax From Billing APP (PIS)" <> 0) then
-                IntSalesCreditNote."Posting Message" += '-Dif COFINS error';
+                if IntSalesCreditNote."Posting Message" <> '' then
+                    IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Error";
 
-            if IntSalesCredi."Tax (PIS) Order" <> IntSalesCredi."Tax From Billing APP (PIS)" then
-                if IntSalesCredi."Tax From Billing APP (PIS)" <> 0 then
-                    if Abs(1 - (IntSalesCredi."Tax (PIS) Order" / IntSalesCredi."Tax From Billing APP (PIS)")) >
-                            SalesReceivablesSetup."Int Tax Difference Allowed" then
-                        IntSalesCreditNote."Posting Message" += '-Dif PIS error';
+                IntSalesCreditNote.Modify();
 
-            if IntSalesCreditNote."Posting Message" <> '' then
-                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Error";
+                IntSalesCredi.Reset();
+                IntSalesCredi.SetRange("No.", IntSalesCreditNote."No.");
+                IntSalesCredi.SetRange("Excel File Name", IntSalesCreditNote."Excel File Name");
+                IntSalesCredi.ModifyAll("Posting Message", IntSalesCreditNote."Posting Message");
+                IntSalesCredi.ModifyAll(Status, IntSalesCreditNote.Status);
 
-            IntSalesCreditNote.Modify();
-
-        end;
+            end;
 
     end;
 
@@ -380,21 +404,21 @@ codeunit 50012 IntSalesCreditNote
     begin
         booHideDialog := true;
 
-        if SalesHeader.get(SalesHeader."Document Type"::"Return Order", IntSalescreditNote."No.") then begin
+        if SalesHeader.get(SalesHeader."Document Type"::"Return Order", IntSalescreditNote."No.") then //begin
             SalesPost.Run(SalesHeader);
-            IntSalescreditNote.Status := IntSalescreditNote.Status::Posted;
-            IntSalescreditNote.Modify();
-        end else
-            if IntSalescreditNote.Status <> IntSalescreditNote.Status::Posted then begin
-                IntSalesRet.Reset();
-                IntSalesRet.SetRange("No.", IntSalescreditNote."No.");
-                if IntSalesRet.FindFirst() then
-                    if IntSalesRet.Status = IntSalesRet.Status::Posted then begin
-                        IntSalescreditNote.Status := IntSalescreditNote.Status::Posted;
-                        IntSalescreditNote.Modify();
+        //     IntSalescreditNote.Status := IntSalescreditNote.Status::Posted;
+        //     IntSalescreditNote.Modify();
+        // end else
+        //     if IntSalescreditNote.Status <> IntSalescreditNote.Status::Posted then begin
+        //         IntSalesRet.Reset();
+        //         IntSalesRet.SetRange("No.", IntSalescreditNote."No.");
+        //         if IntSalesRet.FindFirst() then
+        //             if IntSalesRet.Status = IntSalesRet.Status::Posted then begin
+        //                 IntSalescreditNote.Status := IntSalescreditNote.Status::Posted;
+        //                 IntSalescreditNote.Modify();
 
-                    end;
-            end;
+        //             end;
+        //     end;
 
     end;
 
@@ -402,43 +426,69 @@ codeunit 50012 IntSalesCreditNote
     var
         Customer: Record Customer;
         Item: Record Item;
+        TaxSetupSalesPurchase: Record "CADBR Tax Setup Sales Purchase";
         GeneralPostingSetup: Record "General Posting Setup";
         GLAccount: Record "G/L Account";
         Usgaap: Record "From/To US GAAP";
+        IntSalesCreditNoteOld: Record "IntSalesCreditNote";
+        UserSetup: codeunit "User Setup Management";
+        ErrorDate: Text;
         Cust01Err: label 'Customer %1 Not Found', Comment = '%1 - Customer No.';
         Item01Err: label ' - Item %1 Not Found', Comment = '%1 - Item No.';
         GL01Err: label ' - G/L Account not sent by GP';
         GL02Err: label ' - G/L Account GP %1 different from G/L Account %2', Comment = '%1 - G/L Accoun No. , %2 - G/L Accoun No.';
+        UnitPrice01Err: label 'Sales Credit Order %1 has total value equal to zero.', Comment = '%1 - Item No.';
+        TaxSetup01Err: label 'Automatic Tax Area Config. not registered for Item %1.', Comment = '%1 - Item No.';
+        DocOld01Err: label 'Sales Credit Order with Document No. %1 already imported.', Comment = '%1 - Document No.';
+        Cust02Err: label 'Tax Matrix not registered for the Client %1.', Comment = '%1 - Document No.';
+        TextError: Text[1024];
     begin
 
-        IntSalesCreditNote."Posting Message" := '';
-        IntSalesCreditNote.Modify();
+        Clear(TextError);
 
-        if not Customer.Get(IntSalesCreditNote."Sell-to Customer No.") then begin
-            IntSalesCreditNote."Posting Message" := StrSubstNo(Cust01Err, IntSalesCreditNote."Sell-to Customer No.");
-            IntSalesCreditNote.Modify();
-        end;
+        IntSalesCreditNoteOld.Reset();
+        IntSalesCreditNoteOld.SetFilter("Excel File Name", '<>%1', IntSalesCreditNote."Excel File Name");
+        IntSalesCreditNoteOld.SetRange("No.", IntSalesCreditNote."No.");
+        if IntSalesCreditNoteOld.FindFirst() then
+            TextError += StrSubstNo(DocOld01Err, IntSalesCreditNote."No.");
 
-        if not Item.get(IntSalesCreditNote."Item No.") then begin
-            IntSalesCreditNote."Posting Message" += StrSubstNo(Item01Err, IntSalesCreditNote."Item No.");
-            IntSalesCreditNote.Modify();
-        end;
+        if not Customer.Get(IntSalesCreditNote."Sell-to Customer No.") then
+            TextError += StrSubstNo(Cust01Err, IntSalesCreditNote."Sell-to Customer No.")
+        else
+            if Customer."CADBR Taxes Matrix" = '' then
+                TextError += StrSubstNo(Cust02Err, IntSalesCreditNote."Sell-to Customer No.");
 
-        if IntSalesCreditNote."G/L Account" = '' then begin
-            IntSalesCreditNote."Posting Message" += GL01Err;
-            IntSalesCreditNote.Modify();
-        end else
+
+        if not Item.get(IntSalesCreditNote."Item No.") then
+            TextError += StrSubstNo(Item01Err, IntSalesCreditNote."Item No.");
+        // else begin
+        //     TaxSetupSalesPurchase.Reset();
+        //     TaxSetupSalesPurchase.SetRange("Branch Code", IntSalesCreditNote."Shortcut Dimension 6 Code");
+        //     TaxSetupSalesPurchase.SetRange(Goal, TaxSetupSalesPurchase.Goal::Sales);
+        //     TaxSetupSalesPurchase.SetRange("Item Code Ncm", IntSalesCreditNote."Item No.");
+        //     if not TaxSetupSalesPurchase.FindFirst() then
+        //         TextError += StrSubstNo(TaxSetup01Err, IntSalesCreditNote."Item No.");
+
+        // end;
+
+        if IntSalesCreditNote."G/L Account" = '' then
+            TextError += GL01Err
+        else
             if GeneralPostingSetup.get(Customer."Gen. Bus. Posting Group", Item."Gen. Prod. Posting Group") then
                 if GLAccount.Get(GeneralPostingSetup."Sales Account") then
                     if (GLAccount."No. 2" <> IntSalesCreditNote."G/L Account") then begin
                         Usgaap.Reset();
                         Usgaap.SetRange("US GAAP", IntSalesCreditNote."G/L Account");
                         Usgaap.SetRange("BR GAAP", GeneralPostingSetup."Sales Account");
-                        if not Usgaap.FindFirst() then begin
-                            IntSalesCreditNote."Posting Message" += StrSubstNo(GL02Err, IntSalesCreditNote."G/L Account", GeneralPostingSetup."Sales Account");
-                            IntSalesCreditNote.Modify();
-                        end;
+                        if not Usgaap.FindFirst() then
+                            TextError += StrSubstNo(GL02Err, IntSalesCreditNote."G/L Account", GeneralPostingSetup."Sales Account");
                     end;
+
+        if IntSalesCreditNote."Unit Price" = 0 then
+            TextError += StrSubstNo(UnitPrice01Err, IntSalesCreditNote."External Document No.");
+
+        if not UserSetup.TestAllowedPostingDate(IntSalesCreditNote."Posting Date", ErrorDate) then
+            TextError += CopyStr(ErrorDate, 1, 200);
 
         if IntSalesCreditNote."Shortcut Dimension 1 Code" <> '' then
             if not ValidateDim(1, IntSalesCreditNote."Shortcut Dimension 1 Code") then
@@ -464,7 +514,8 @@ codeunit 50012 IntSalesCreditNote
             if not ValidateDim(6, IntSalesCreditNote."Shortcut Dimension 6 Code") then
                 CreateDim(6, IntSalesCreditNote."Shortcut Dimension 6 Code");
 
-        if IntSalesCreditNote."Posting Message" <> '' then begin
+        if TextError <> '' then begin
+            IntSalesCreditNote."Posting Message" := CopyStr(TextError, 1, 200);
             IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Error";
             IntSalesCreditNote.Modify();
 
@@ -540,6 +591,20 @@ codeunit 50012 IntSalesCreditNote
 
         SalesHeader."Posting No." := '';
 
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Sales-Post", 'OnAfterPostSalesDoc', '', false, false)]
+    local procedure PostOnAfterPostSalesDoc(var SalesHeader: Record "Sales Header"; SalesInvHdrNo: Code[20])
+    var
+        IntSalesCreditNote: Record "IntSalesCreditNote";
+    begin
+
+        IntSalesCreditNote.Reset();
+        IntSalesCreditNote.SetRange("No.", SalesHeader."No.");
+        if IntSalesCreditNote.FindFirst() then begin
+            IntSalesCreditNote.ModifyAll("Posting Message", '');
+            IntSalesCreditNote.ModifyAll(Status, IntSalesCreditNote.Status::Posted);
+        end;
 
     end;
 

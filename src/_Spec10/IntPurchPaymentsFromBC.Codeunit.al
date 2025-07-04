@@ -54,6 +54,7 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                 end;
 
                 VendorLedgerEntry.CalcFields("Remaining Amount");
+                VendorLedgerEntry.CalcFields("Shortcut Dimension 5 Code");
 
                 DetailedVendorLed.Reset();
                 DetailedVendorLed.SetRange("Document No.", VendorLedgerEntry."Document No.");
@@ -86,6 +87,7 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                                 IPPFromBC.Amount := DetailedVendorLed.Amount;
                                 IPPFromBC."WiteOffAmount" := VendorLedgerEntry."Remaining Amount";
                                 IPPFromBC."Dimension Set ID" := VendorLedgerEntry."Dimension Set ID";
+                                IPPFromBC."Dimension 5" := VendorLedgerEntry."Shortcut Dimension 5 Code";
                                 IPPFromBC."Applies-to Doc. Type" := VendorLedgerEntry."Applies-to Doc. Type";
                                 IPPFromBC."Applies-to Doc. No." := Format(DetailedVendorLed."CADBR Vend. Ledg. Document No.");
                                 IPPFromBC."External Document No." := DetailedVendorLed."CADBR VendLedg. Ext. Doc. No."; //ajustar
@@ -147,6 +149,7 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                                 IPPFromBC.Amount := DetailedVendorLed.Amount;
                                 IPPFromBC."WiteOffAmount" := VendorLedgerEntry."Remaining Amount";
                                 IPPFromBC."Dimension Set ID" := VendorLedgerEntry."Dimension Set ID";
+                                IPPFromBC."Dimension 5" := VendorLedgerEntry."Shortcut Dimension 5 Code";
                                 IPPFromBC."Applies-to Doc. Type" := VendorLedgerEntry."Applies-to Doc. Type";
                                 IPPFromBC."Applies-to Doc. No." := Format(DetailedVendorLed."CADBR Vend. Ledg. Document No.");
                                 IPPFromBC."External Document No." := Format(DetailedVendorLed."CADBR Vend. Ledg. Document No."); //ajustar
@@ -219,6 +222,7 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                         IPPFromBC.Amount := VendorLedgerEntry.Amount;
                         IPPFromBC."WiteOffAmount" := VendorLedgerEntry."Remaining Amount";
                         IPPFromBC."Dimension Set ID" := VendorLedgerEntry."Dimension Set ID";
+                        IPPFromBC."Dimension 5" := VendorLedgerEntry."Shortcut Dimension 5 Code";
                         IPPFromBC.Status := IPPFromBC.Status::"Data Error";
                         IPPFromBC."Posting Message" := ErrorLabel01;
 
@@ -282,6 +286,7 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                 Clear(LineNo);
                 Clear(EntryNo);
                 Clear(TotalAmount);
+                VendorLedgerEntry.CalcFields("Shortcut Dimension 5 Code");
 
                 OldIPPFromBC.Reset();
                 OldIPPFromBC.SetRange("Journal Template Name", VendorLedgerEntry."Journal Templ. Name");
@@ -322,6 +327,7 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                                 IPPFromBC.Amount := DetailedVendorLed.Amount;
 
                                 IPPFromBC."Dimension Set ID" := VendorLedgerEntry."Dimension Set ID";
+                                IPPFromBC."Dimension 5" := VendorLedgerEntry."Shortcut Dimension 5 Code";
                                 IPPFromBC."Applies-to Doc. Type" := VendorLedgerEntry."Applies-to Doc. Type";
                                 IPPFromBC."Applies-to Doc. No." := Format(DetailedVendorLed."CADBR Vend. Ledg. Document No.");
                                 IPPFromBC."External Document No." := DetailedVendorLed."CADBR VendLedg. Ext. Doc. No."; //ajustar
@@ -385,6 +391,7 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                                 IPPFromBC."Bal. Account No." := VendorLedgerEntry."Bal. Account No.";
                                 IPPFromBC.Amount := DetailedVendorLed.Amount;
                                 IPPFromBC."Dimension Set ID" := VendorLedgerEntry."Dimension Set ID";
+                                IPPFromBC."Dimension 5" := VendorLedgerEntry."Shortcut Dimension 5 Code";
                                 IPPFromBC."Applies-to Doc. Type" := VendorLedgerEntry."Applies-to Doc. Type";
                                 IPPFromBC."Applies-to Doc. No." := Format(DetailedVendorLed."CADBR Vend. Ledg. Document No.");
                                 IPPFromBC."External Document No." := Format(DetailedVendorLed."CADBR Vend. Ledg. Document No."); //ajustar
@@ -450,6 +457,8 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                 Clear(EntryNo);
                 Clear(TotalAmount);
 
+                VendorLedgerEntry.CalcFields("Shortcut Dimension 5 Code");
+
                 OldIPPFromBC.Reset();
                 OldIPPFromBC.SetRange("Journal Template Name", VendorLedgerEntry."Journal Templ. Name");
                 OldIPPFromBC.SetRange("Journal Batch Name", VendorLedgerEntry."Journal Batch Name");
@@ -489,6 +498,7 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                                 IPPFromBC."Bal. Account No." := VendorLedgerEntry."Bal. Account No.";
                                 IPPFromBC.Amount := -DetailedVendorLed.Amount;
                                 IPPFromBC."Dimension Set ID" := VendorLedgerEntry."Dimension Set ID";
+                                IPPFromBC."Dimension 5" := VendorLedgerEntry."Shortcut Dimension 5 Code";
                                 IPPFromBC."Applies-to Doc. Type" := VendorLedgerEntry."Applies-to Doc. Type";
                                 IPPFromBC."Applies-to Doc. No." := Format(DetailedVendorLed."CADBR Vend. Ledg. Document No.");
                                 IPPFromBC."External Document No." := DetailedVendorLed."CADBR VendLedg. Ext. Doc. No."; //ajustar
@@ -551,6 +561,7 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                                 IPPFromBC."Bal. Account No." := VendorLedgerEntry."Bal. Account No.";
                                 IPPFromBC.Amount := -DetailedVendorLed.Amount;
                                 IPPFromBC."Dimension Set ID" := VendorLedgerEntry."Dimension Set ID";
+                                IPPFromBC."Dimension 5" := VendorLedgerEntry."Shortcut Dimension 5 Code";
                                 IPPFromBC."Applies-to Doc. Type" := VendorLedgerEntry."Applies-to Doc. Type";
                                 IPPFromBC."Applies-to Doc. No." := Format(DetailedVendorLed."CADBR Vend. Ledg. Document No.");
                                 IPPFromBC."External Document No." := Format(DetailedVendorLed."CADBR Vend. Ledg. Document No."); //ajustar

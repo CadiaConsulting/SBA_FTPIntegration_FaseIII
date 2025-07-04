@@ -115,4 +115,16 @@ codeunit 50008 "Table Events"
         end;
 
     end;
+
+
+    [EventSubscriber(ObjectType::Table, Database::"Purchase Header", 'OnBeforeValidatePrintSerie', '', false, false)]
+
+    local procedure PurchaseHeaderOnBeforeValidatePrintSerie(var IsHandled: Boolean)
+    var
+
+    begin
+
+        IsHandled := true;
+
+    end;
 }

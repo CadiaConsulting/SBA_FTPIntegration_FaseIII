@@ -48,7 +48,7 @@ pageextension 50017 "INTPurchaseOrderList" extends "Purchase Order List"
         {
             action(DeleteRecords)
             {
-                Caption = 'Delete Records';
+                Caption = 'Delete/Cancel';
                 ApplicationArea = All;
                 Promoted = true;
                 PromotedOnly = true;
@@ -61,26 +61,36 @@ pageextension 50017 "INTPurchaseOrderList" extends "Purchase Order List"
                 var
                     PurchaseHeader: Record "Purchase Header";
                     intPur: Record "Integration Purchase";
+                    importForm: Page "Rejection Reason Dialog";
+                    RejectionCode: Code[20];
                 begin
                     CurrPage.SetSelectionFilter(PurchaseHeader);
 
-                    PurchaseHeader.SetRange("Document Type", PurchaseHeader."Document Type"::Order);
-                    if not PurchaseHeader.IsEmpty then begin
-                        if Confirm('You will delete %1 records, do you want to continue?', false, Format(PurchaseHeader.Count())) then begin
-                            if PurchaseHeader.FindSet() then
-                                repeat
+                    if not (importForm.RunModal = Action::OK) then
+                        exit;
+                    RejectionCode := importForm.GetReject();
+                    if RejectionCode <> '' then begin
 
-                                    intPur.Reset();
-                                    intPur.SetRange("Document No.", PurchaseHeader."No.");
-                                    if not intPur.IsEmpty then
-                                        intPur.ModifyAll(Status, intpur.Status::Cancelled);
+                        PurchaseHeader.SetRange("Document Type", PurchaseHeader."Document Type"::Order);
+                        if not PurchaseHeader.IsEmpty then begin
+                            if Confirm('You will delete %1 records, do you want to continue?', false, Format(PurchaseHeader.Count())) then begin
+                                if PurchaseHeader.FindSet() then
+                                    repeat
 
-                                    PurchaseHeader."Posting No." := '';
-                                    PurchaseHeader.Modify();
-                                    PurchaseHeader.Delete(true);
+                                        intPur.Reset();
+                                        intPur.SetRange("Document No.", PurchaseHeader."No.");
+                                        if not intPur.IsEmpty then begin
+                                            intPur.ModifyAll("Rejection Reason", RejectionCode);
+                                            intPur.ModifyAll(Status, intpur.Status::Cancelled);
+                                        end;
 
-                                until PurchaseHeader.Next() = 0;
+                                        PurchaseHeader."Posting No." := '';
+                                        PurchaseHeader.Modify();
+                                        PurchaseHeader.Delete(false);
 
+                                    until PurchaseHeader.Next() = 0;
+
+                            end;
                         end;
                     end;
 

@@ -496,10 +496,13 @@ codeunit 50002 "Import Excel Buffer"
     procedure ImportExcelSalesReturn()
     var
         IntSalesCreditNote: Record IntSalesCreditNote;
+        IntSalesCreditNoteOld: Record IntSalesCreditNote;
         IntegrationErros: Record IntegrationErros;
         FTPIntSetup: Record "FTP Integration Setup";
         FTPDir: Record "FTP Directory";
         FTPCommunication: codeunit "FTP Communication";
+        IntSalesCredit: Codeunit IntSalesCreditNote;
+        SalesCrMemoHeader: Record "Sales Cr.Memo Header";
         ret: Text;
         lines: List of [Text];
         line: Text;
@@ -508,13 +511,16 @@ codeunit 50002 "Import Excel Buffer"
         RowNo: Integer;
         ColNo: Integer;
         LineNo: Integer;
+        LineNoDupli: Integer;
         MaxRowNo: Integer;
         MaxCollumn: Integer;
         CRLF: Char;
         ErrorFile: Boolean;
         ExistLine: Boolean;
         Item: Record Item;
-
+        FileOld01Err: label 'Integration File already imported %1.', Comment = '%1 - File';
+        DocOld01Err: label 'Sales Credit Order with Document No. %1 already imported.', Comment = '%1 - Document No.';
+        DocOld02Err: label 'Sales Credit Order and Line with Document No. %1 already imported to File %2.', Comment = '%1 - Document No.';
     begin
         RowNo := 0;
         ColNo := 0;
@@ -522,6 +528,7 @@ codeunit 50002 "Import Excel Buffer"
         LineNo := 0;
         MaxCollumn := 0;
         ExistLine := false;
+        LineNoDupli := 99999;
 
         //FTPIntSetup.Get(FTPIntSetup.Integration::"Sales Credit Note");
         FTPIntSetup.Reset();
@@ -586,258 +593,332 @@ codeunit 50002 "Import Excel Buffer"
                     if IntSalesCreditNote.Insert() then
                         ErrorFile := true;
 
-                end else
+                end else begin
                     //Column END Error
-                for RowNo := 2 to MaxRowNo do begin
-                        LineNo := LineNo + 10000;
-                        ExistLine := false;
+                    clear(ExistLine);
 
-                        if (StrLen(GetValueAtCell(RowNo, 2)) <= 20) then begin
-                            if IntSalesCreditNote.Get(GetValueAtCell(RowNo, 2), GetValueAtCell(RowNo, 20)) then begin
-                                //Not Modify Posted Line
-                                if IntSalesCreditNote.Status = IntSalesCreditNote.Status::Posted then begin
-                                    ExistLine := false;
-                                    IntSalesCreditNote."Posting Message" := 'Duplicate ' + copystr(Filename, 1, 200);
-                                    IntSalesCreditNote.Modify();
-                                end else
-                                    ExistLine := true;
+                    IntSalesCreditNote.Reset();
+                    IntSalesCreditNote.SetRange("Excel File Name", FileName);
+                    if IntSalesCreditNote.FindFirst() then begin
 
-                                //Delete Errors
-                                IntegrationErros.Reset();
-                                IntegrationErros.Setrange("Document No.", IntSalesCreditNote."No.");
-                                if IntegrationErros.FindSet() then
-                                    repeat
-                                        IntegrationErros.DeleteAll();
-                                    until IntegrationErros.Next() = 0
-                            end else
-                                IntSalesCreditNote.Init();
+                        ExistLine := true;
+                        ErrorFile := true;
 
-                            IntSalesCreditNote.Init();
-                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::Imported;
-                            Evaluate(IntSalesCreditNote."No.", GetValueAtCell(RowNo, 2));
-                            Evaluate(IntSalesCreditNote."Line No.", GetValueAtCell(RowNo, 20));
-                            IntSalesCreditNote."Excel File Name" := copystr(FileName, 1, 200);
-                        end else begin
-                            IntSalesCreditNote.Init();
-                            Evaluate(IntSalesCreditNote."No.", 'Errors-' + format(RowNo));
-                            Evaluate(IntSalesCreditNote."Line No.", GetValueAtCell(RowNo, 20));
-                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                            IntSalesCreditNote."Excel File Name" := copystr(FileName, 1, 200);
+                        IntSalesCreditNote.Init();
+                        //"Document No"
+                        IntSalesCreditNote."No." := 'ERRO' + DelChr(Format(Time), '=', ':');
 
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
-                              IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("No."), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 2), IntSalesCreditNote."Excel File Name");
-                        end;
+                        //Line No.
+                        IntSalesCreditNote."Line No." := 1;
 
-                        if (StrLen(GetValueAtCell(RowNo, 3)) <= 20) then
-                            Evaluate(IntSalesCreditNote."Sell-to Customer No.", GetValueAtCell(RowNo, 3))
-                        else begin
-                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
-                              IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Sell-to Customer No."), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 3), IntSalesCreditNote."Excel File Name");
-                        end;
-
-                        if (StrLen(GetValueAtCell(RowNo, 4)) <= 35) then
-                            Evaluate(IntSalesCreditNote."Your Reference", GetValueAtCell(RowNo, 4))
-                        else begin
-                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
-                              IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Your Reference"), 1, 50),
-                              'Maximum 35 characters', GetValueAtCell(RowNo, 4), IntSalesCreditNote."Excel File Name");
-                        end;
-
-                        if ValidateDate(GetValueAtCell(RowNo, 5)) then
-                            IntSalesCreditNote."Order Date" := GlobalDateYes
-                        else begin
-                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
-                            IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Order Date"), 1, 50),
-                            CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 5), IntSalesCreditNote."Excel File Name");
-
-                        end;
-
-                        if ValidateDate(GetValueAtCell(RowNo, 6)) then
-                            IntSalesCreditNote."Posting Date" := GlobalDateYes
-                        else begin
-                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
-                            IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Posting Date"), 1, 50),
-                            CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 6), IntSalesCreditNote."Excel File Name");
-
-                        end;
-
-                        if (StrLen(GetValueAtCell(RowNo, 8)) <= 20) then
-                            Evaluate(IntSalesCreditNote."Customer Posting Group", GetValueAtCell(RowNo, 8))
-                        else begin
-                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
-                              IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Customer Posting Group"), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 8), IntSalesCreditNote."Excel File Name");
-                        end;
-
-                        if ValidateDate(GetValueAtCell(RowNo, 9)) then
-                            IntSalesCreditNote."Document Date" := GlobalDateYes
-                        else begin
-                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
-                            IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Document Date"), 1, 50),
-                            CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 9), IntSalesCreditNote."Excel File Name");
-
-                        end;
-
-                        if (StrLen(GetValueAtCell(RowNo, 10)) <= 35) then
-                            Evaluate(IntSalesCreditNote."External Document No.", GetValueAtCell(RowNo, 10))
-                        else begin
-                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
-                              IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("External Document No."), 1, 50),
-                              'Maximum 35 characters', GetValueAtCell(RowNo, 10), IntSalesCreditNote."Excel File Name");
-                        end;
-
-                        IntSalesCreditNote."Freight Billed To" := IntSalesCreditNote."Freight Billed To"::"Without Freight";
-
-                        if (StrLen(GetValueAtCell(RowNo, 14)) <= 20) then
-                            Evaluate(IntSalesCreditNote."Shortcut Dimension 1 Code", GetValueAtCell(RowNo, 14))
-                        else begin
-                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
-                              IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Shortcut Dimension 1 Code"), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 14), IntSalesCreditNote."Excel File Name");
-                        end;
-
-                        if (StrLen(GetValueAtCell(RowNo, 15)) <= 20) then
-                            Evaluate(IntSalesCreditNote."Shortcut Dimension 2 Code", GetValueAtCell(RowNo, 15))
-                        else begin
-                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
-                              IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Shortcut Dimension 2 Code"), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 15), IntSalesCreditNote."Excel File Name");
-                        end;
-
-                        if (StrLen(GetValueAtCell(RowNo, 16)) <= 20) then
-                            Evaluate(IntSalesCreditNote."Shortcut Dimension 3 Code", GetValueAtCell(RowNo, 16))
-                        else begin
-                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
-                              IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Shortcut Dimension 3 Code"), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 16), IntSalesCreditNote."Excel File Name");
-                        end;
-
-                        if (StrLen(GetValueAtCell(RowNo, 17)) <= 20) then
-                            Evaluate(IntSalesCreditNote."Shortcut Dimension 4 Code", GetValueAtCell(RowNo, 17))
-                        else begin
-                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
-                              IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Shortcut Dimension 4 Code"), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 17), IntSalesCreditNote."Excel File Name");
-                        end;
-
-                        if (StrLen(GetValueAtCell(RowNo, 18)) <= 20) then
-                            Evaluate(IntSalesCreditNote."Shortcut Dimension 5 Code", GetValueAtCell(RowNo, 18))
-                        else begin
-                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
-                              IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Shortcut Dimension 5 Code"), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 18), IntSalesCreditNote."Excel File Name");
-                        end;
-
-                        if (StrLen(GetValueAtCell(RowNo, 19)) <= 20) then
-                            Evaluate(IntSalesCreditNote."Shortcut Dimension 6 Code", GetValueAtCell(RowNo, 19))
-                        else begin
-                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
-                              IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Shortcut Dimension 6 Code"), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 19), IntSalesCreditNote."Excel File Name");
-                        end;
-                        //Lines
-
-                        IntSalesCreditNote.Type := IntSalesCreditNote.Type::Item;
-
-                        if (StrLen(GetValueAtCell(RowNo, 22)) <= 20) and
-                            item.get(GetValueAtCell(RowNo, 22)) then
-                            Evaluate(IntSalesCreditNote."Item No.", GetValueAtCell(RowNo, 22))
-                        else
-                            if item.get(GetValueAtCell(RowNo, 22)) then begin
-                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
-                                  IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Item No."), 1, 50),
-                                  'Maximum 20 characters', GetValueAtCell(RowNo, 22), IntSalesCreditNote."Excel File Name");
-                            end else begin
-                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Error";
-                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
-                                  IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Item No."), 1, 50),
-                                  'Error Item No.', GetValueAtCell(RowNo, 22), IntSalesCreditNote."Excel File Name");
-                            end;
-
-                        if (StrLen(GetValueAtCell(RowNo, 25)) <= 100) then
-                            Evaluate(IntSalesCreditNote.Description, GetValueAtCell(RowNo, 25))
-                        else begin
-                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
-                              IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption(Description), 1, 50),
-                              'Maximum 100 characters', GetValueAtCell(RowNo, 25), IntSalesCreditNote."Excel File Name");
-                        end;
-
-                        if ValidateDecimal(GetValueAtCell(RowNo, 26)) then
-                            IntSalesCreditNote.Quantity := GlobalDecimalYes
-                        else begin
-                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
-                            IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption(Quantity), 1, 50),
-                            CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 26), IntSalesCreditNote."Excel File Name");
-
-                        end;
-
-                        if ValidateDecimal(GetValueAtCell(RowNo, 27)) then
-                            IntSalesCreditNote."Unit Price" := GlobalDecimalYes
-                        else begin
-                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
-                            IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Unit Price"), 1, 50),
-                            CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 27), IntSalesCreditNote."Excel File Name");
-
-                        end;
-
-                        if (StrLen(GetValueAtCell(RowNo, 34)) <= 20) then
-                            Evaluate(IntSalesCreditNote."G/L Account", GetValueAtCell(RowNo, 34))
-                        else begin
-                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
-                              IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("G/L Account"), 1, 50),
-                              'Maximum 20 characters', GetValueAtCell(RowNo, 34), IntSalesCreditNote."Excel File Name");
-                        end;
-
-                        if ValidateDecimal(GetValueAtCell(RowNo, 35)) then
-                            IntSalesCreditNote."Tax From Billing APP (PIS)" := GlobalDecimalYes
-                        else
-                            if (GetValueAtCell(RowNo, 35) <> '') then begin
-                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
-                                IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Tax From Billing APP (PIS)"), 1, 50),
-                                CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 35), IntSalesCreditNote."Excel File Name");
-
-                            end;
-
-                        if ValidateDecimal(GetValueAtCell(RowNo, 36)) then
-                            IntSalesCreditNote."Tax From Billing APP (COFINS)" := GlobalDecimalYes
-                        else
-                            if (GetValueAtCell(RowNo, 36) <> '') then begin
-                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
-                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
-                                IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Tax From Billing APP (COFINS)"), 1, 50),
-                                CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 36), IntSalesCreditNote."Excel File Name");
-
-                            end;
-                        if ExistLine then
-                            IntSalesCreditNote.Modify()
-                        else
-                            if IntSalesCreditNote.Insert() then;
-
-                        if IntSalesCreditNote.Status = IntSalesCreditNote.Status::"Data Excel Error" then
-                            ErrorFile := true;
+                        IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Layout Error";
+                        IntSalesCreditNote."Posting Message" := StrSubstNo(FileOld01Err, FileName);
+                        IntSalesCreditNote."Excel File Name" := CopyStr(FileName, 1, 200);
+                        IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order", '', LineNo, '', 'Layout Error', '', FileName);
+                        IntSalesCreditNote.Insert();
 
                     end;
+
+                    if ErrorFile = false then
+                        for RowNo := 2 to MaxRowNo do begin
+                            LineNo := 0;
+                            ExistLine := false;
+
+                            if (StrLen(GetValueAtCell(RowNo, 2)) <= 20) and (GetValueAtCell(RowNo, 2) <> '') then begin
+
+                                if (IntSalesCreditNoteOld.Get(copystr(Filename, 1, 200), GetValueAtCell(RowNo, 2), GetValueAtCell(RowNo, 20))) then begin
+                                    //Not Modify Posted Line
+
+                                    ErrorFile := true;
+                                    IntSalesCreditNote.Init();
+                                    IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                    Evaluate(IntSalesCreditNote."No.", GetValueAtCell(RowNo, 2));
+                                    LineNoDupli -= 1;
+                                    IntSalesCreditNote."Line No." := LineNoDupli;
+                                    IntSalesCreditNote."Excel File Name" := copystr(Filename, 1, 200);
+
+                                    IntSalesCreditNote."Posting Message" := StrSubstNo(DocOld02Err, IntSalesCreditNote."No.", CopyStr(FileName, 1, 200));
+                                    IntSalesCreditNoteOld.Status := IntSalesCreditNoteOld.Status::"Data Excel Error";
+                                    IntSalesCreditNoteOld."Posting Message" := StrSubstNo(DocOld02Err, IntSalesCreditNoteOld."No.", CopyStr(FileName, 1, 200));
+                                    IntSalesCreditNoteOld.Modify();
+
+                                end else begin
+
+                                    IntSalesCreditNoteOld.Reset();
+                                    IntSalesCreditNoteOld.SetRange("No.", GetValueAtCell(RowNo, 2));
+                                    Evaluate(LineNo, GetValueAtCell(RowNo, 20));
+                                    IntSalesCreditNoteOld.SetRange("Line No.", LineNo);
+                                    if IntSalesCreditNoteOld.FindFirst() then begin
+                                        //Not Modify Posted Line
+
+                                        ErrorFile := true;
+                                        IntSalesCreditNote.Init();
+                                        IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                        Evaluate(IntSalesCreditNote."No.", GetValueAtCell(RowNo, 2));
+                                        Evaluate(IntSalesCreditNote."Line No.", GetValueAtCell(RowNo, 20));
+                                        IntSalesCreditNote."Excel File Name" := copystr(Filename, 1, 200);
+
+                                        if IntSalesCreditNoteOld.Status = IntSalesCreditNoteOld.Status::Posted then
+                                            IntSalesCreditNote."Posting Message" := StrSubstNo(DocOld01Err, IntSalesCreditNote."No.")
+                                        else
+                                            IntSalesCreditNote."Posting Message" := StrSubstNo(DocOld02Err, IntSalesCreditNote."No.", CopyStr(FileName, 1, 200));
+
+                                    end else begin
+
+                                        if SalesCrMemoHeader.get(GetValueAtCell(RowNo, 2)) then begin
+
+                                            ErrorFile := true;
+                                            IntSalesCreditNote.Init();
+                                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                            Evaluate(IntSalesCreditNote."No.", GetValueAtCell(RowNo, 2));
+                                            Evaluate(IntSalesCreditNote."Line No.", GetValueAtCell(RowNo, 20));
+                                            IntSalesCreditNote."Excel File Name" := copystr(Filename, 1, 200);
+                                            IntSalesCreditNote."Posting Message" := StrSubstNo(DocOld01Err, IntSalesCreditNote."No.");
+
+                                        end else begin
+
+                                            IntSalesCreditNote.Init();
+                                            IntSalesCreditNote.Status := IntSalesCreditNote.Status::Imported;
+                                            Evaluate(IntSalesCreditNote."No.", GetValueAtCell(RowNo, 2));
+                                            Evaluate(IntSalesCreditNote."Line No.", GetValueAtCell(RowNo, 20));
+                                            IntSalesCreditNote."Excel File Name" := copystr(Filename, 1, 200);
+
+                                        end;
+                                    end;
+                                end;
+
+                            end else begin
+                                IntSalesCreditNote.Init();
+                                Evaluate(IntSalesCreditNote."No.", 'Errors-' + format(RowNo));
+                                Evaluate(IntSalesCreditNote."Line No.", GetValueAtCell(RowNo, 20));
+                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                IntSalesCreditNote."Excel File Name" := copystr(Filename, 1, 200);
+
+                                if (StrLen(GetValueAtCell(RowNo, 2)) > 20) then
+                                    IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                      IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("No."), 1, 50),
+                                      'Maximum 20 characters', GetValueAtCell(RowNo, 2), IntSalesCreditNote."Excel File Name");
+
+                                if (GetValueAtCell(RowNo, 2) = '') then
+                                    IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                   IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("No."), 1, 50),
+                                   'Blank characters', GetValueAtCell(RowNo, 2), IntSalesCreditNote."Excel File Name");
+
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 3)) <= 20) then
+                                Evaluate(IntSalesCreditNote."Sell-to Customer No.", GetValueAtCell(RowNo, 3))
+                            else begin
+                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
+                                  IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Sell-to Customer No."), 1, 50),
+                                  'Maximum 20 characters', GetValueAtCell(RowNo, 3), IntSalesCreditNote."Excel File Name");
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 4)) <= 35) then
+                                Evaluate(IntSalesCreditNote."Your Reference", GetValueAtCell(RowNo, 4))
+                            else begin
+                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
+                                  IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Your Reference"), 1, 50),
+                                  'Maximum 35 characters', GetValueAtCell(RowNo, 4), IntSalesCreditNote."Excel File Name");
+                            end;
+
+                            if ValidateDate(GetValueAtCell(RowNo, 5)) then
+                                IntSalesCreditNote."Order Date" := GlobalDateYes
+                            else begin
+                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
+                                IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Order Date"), 1, 50),
+                                CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 5), IntSalesCreditNote."Excel File Name");
+
+                            end;
+
+                            if ValidateDate(GetValueAtCell(RowNo, 6)) then
+                                IntSalesCreditNote."Posting Date" := GlobalDateYes
+                            else begin
+                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
+                                IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Posting Date"), 1, 50),
+                                CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 6), IntSalesCreditNote."Excel File Name");
+
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 8)) <= 20) then
+                                Evaluate(IntSalesCreditNote."Customer Posting Group", GetValueAtCell(RowNo, 8))
+                            else begin
+                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
+                                  IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Customer Posting Group"), 1, 50),
+                                  'Maximum 20 characters', GetValueAtCell(RowNo, 8), IntSalesCreditNote."Excel File Name");
+                            end;
+
+                            if ValidateDate(GetValueAtCell(RowNo, 9)) then
+                                IntSalesCreditNote."Document Date" := GlobalDateYes
+                            else begin
+                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
+                                IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Document Date"), 1, 50),
+                                CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 9), IntSalesCreditNote."Excel File Name");
+
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 10)) <= 35) then
+                                Evaluate(IntSalesCreditNote."External Document No.", GetValueAtCell(RowNo, 10))
+                            else begin
+                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
+                                  IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("External Document No."), 1, 50),
+                                  'Maximum 35 characters', GetValueAtCell(RowNo, 10), IntSalesCreditNote."Excel File Name");
+                            end;
+
+                            IntSalesCreditNote."Freight Billed To" := IntSalesCreditNote."Freight Billed To"::"Without Freight";
+
+                            if (StrLen(GetValueAtCell(RowNo, 14)) <= 20) then
+                                Evaluate(IntSalesCreditNote."Shortcut Dimension 1 Code", GetValueAtCell(RowNo, 14))
+                            else begin
+                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
+                                  IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Shortcut Dimension 1 Code"), 1, 50),
+                                  'Maximum 20 characters', GetValueAtCell(RowNo, 14), IntSalesCreditNote."Excel File Name");
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 15)) <= 20) then
+                                Evaluate(IntSalesCreditNote."Shortcut Dimension 2 Code", GetValueAtCell(RowNo, 15))
+                            else begin
+                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
+                                  IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Shortcut Dimension 2 Code"), 1, 50),
+                                  'Maximum 20 characters', GetValueAtCell(RowNo, 15), IntSalesCreditNote."Excel File Name");
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 16)) <= 20) then
+                                Evaluate(IntSalesCreditNote."Shortcut Dimension 3 Code", GetValueAtCell(RowNo, 16))
+                            else begin
+                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
+                                  IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Shortcut Dimension 3 Code"), 1, 50),
+                                  'Maximum 20 characters', GetValueAtCell(RowNo, 16), IntSalesCreditNote."Excel File Name");
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 17)) <= 20) then
+                                Evaluate(IntSalesCreditNote."Shortcut Dimension 4 Code", GetValueAtCell(RowNo, 17))
+                            else begin
+                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
+                                  IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Shortcut Dimension 4 Code"), 1, 50),
+                                  'Maximum 20 characters', GetValueAtCell(RowNo, 17), IntSalesCreditNote."Excel File Name");
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 18)) <= 20) then
+                                Evaluate(IntSalesCreditNote."Shortcut Dimension 5 Code", GetValueAtCell(RowNo, 18))
+                            else begin
+                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
+                                  IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Shortcut Dimension 5 Code"), 1, 50),
+                                  'Maximum 20 characters', GetValueAtCell(RowNo, 18), IntSalesCreditNote."Excel File Name");
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 19)) <= 20) then
+                                Evaluate(IntSalesCreditNote."Shortcut Dimension 6 Code", GetValueAtCell(RowNo, 19))
+                            else begin
+                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
+                                  IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Shortcut Dimension 6 Code"), 1, 50),
+                                  'Maximum 20 characters', GetValueAtCell(RowNo, 19), IntSalesCreditNote."Excel File Name");
+                            end;
+                            //Lines
+
+                            IntSalesCreditNote.Type := IntSalesCreditNote.Type::Item;
+
+                            if (StrLen(GetValueAtCell(RowNo, 22)) <= 20) and
+                                item.get(GetValueAtCell(RowNo, 22)) then
+                                Evaluate(IntSalesCreditNote."Item No.", GetValueAtCell(RowNo, 22))
+                            else
+                                if item.get(GetValueAtCell(RowNo, 22)) then begin
+                                    IntSalesCreditNote."Item No." := GetValueAtCell(RowNo, 22);
+                                    IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                    IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
+                                      IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Item No."), 1, 50),
+                                      'Maximum 20 characters', GetValueAtCell(RowNo, 22), IntSalesCreditNote."Excel File Name");
+                                end else begin
+                                    IntSalesCreditNote."Item No." := GetValueAtCell(RowNo, 22);
+                                    IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Error";
+                                    IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
+                                      IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Item No."), 1, 50),
+                                      'Error Item No.', GetValueAtCell(RowNo, 22), IntSalesCreditNote."Excel File Name");
+                                end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 25)) <= 100) then
+                                Evaluate(IntSalesCreditNote.Description, GetValueAtCell(RowNo, 25))
+                            else begin
+                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
+                                  IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption(Description), 1, 50),
+                                  'Maximum 100 characters', GetValueAtCell(RowNo, 25), IntSalesCreditNote."Excel File Name");
+                            end;
+
+                            if ValidateDecimal(GetValueAtCell(RowNo, 26)) then
+                                IntSalesCreditNote.Quantity := GlobalDecimalYes
+                            else begin
+                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
+                                IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption(Quantity), 1, 50),
+                                CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 26), IntSalesCreditNote."Excel File Name");
+
+                            end;
+
+                            if ValidateDecimal(GetValueAtCell(RowNo, 27)) then
+                                IntSalesCreditNote."Unit Price" := GlobalDecimalYes
+                            else begin
+                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
+                                IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Unit Price"), 1, 50),
+                                CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 27), IntSalesCreditNote."Excel File Name");
+
+                            end;
+
+                            if (StrLen(GetValueAtCell(RowNo, 34)) <= 20) then
+                                Evaluate(IntSalesCreditNote."G/L Account", GetValueAtCell(RowNo, 34))
+                            else begin
+                                IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
+                                  IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("G/L Account"), 1, 50),
+                                  'Maximum 20 characters', GetValueAtCell(RowNo, 34), IntSalesCreditNote."Excel File Name");
+                            end;
+
+                            if ValidateDecimal(GetValueAtCell(RowNo, 35)) then
+                                IntSalesCreditNote."Tax From Billing APP (PIS)" := GlobalDecimalYes
+                            else
+                                if (GetValueAtCell(RowNo, 35) <> '') then begin
+                                    IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                    IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
+                                    IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Tax From Billing APP (PIS)"), 1, 50),
+                                    CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 35), IntSalesCreditNote."Excel File Name");
+
+                                end;
+
+                            if ValidateDecimal(GetValueAtCell(RowNo, 36)) then
+                                IntSalesCreditNote."Tax From Billing APP (COFINS)" := GlobalDecimalYes
+                            else
+                                if (GetValueAtCell(RowNo, 36) <> '') then begin
+                                    IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
+                                    IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
+                                    IntSalesCreditNote."No.", IntSalesCreditNote."Line No.", CopyStr(IntSalesCreditNote.FieldCaption("Tax From Billing APP (COFINS)"), 1, 50),
+                                    CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 36), IntSalesCreditNote."Excel File Name");
+
+                                end;
+
+                            if IntSalesCreditNote.Insert() then;
+
+                            if IntSalesCreditNote.Status = IntSalesCreditNote.Status::"Data Excel Error" then
+                                ErrorFile := true
+                            else
+                                IntSalesCredit.ValidateIntSalesCredit(IntSalesCreditNote);
+
+                        end;
+
+                end;
 
                 if ErrorFile then
                     FTPCommunication.DoAction(Enum::"FTP Actions"::rename, FileName, FTPIntSetup.Directory, FTPIntSetup."Error Folder", '')
@@ -931,7 +1012,7 @@ codeunit 50002 "Import Excel Buffer"
                 if TempExcelBuffer.FindLast() then
                     MaxCollumn := TempExcelBuffer."Column No.";
 
-                if MaxCollumn <> 38 then begin
+                if MaxCollumn <> 40 then begin
 
                     IntegrationPurchase.Init();
                     IntegrationPurchase."Document No." := DelChr(Format((Today)) + format(Time), '=', ':/');
@@ -1273,6 +1354,25 @@ codeunit 50002 "Import Excel Buffer"
                             CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, 3), IntegrationPurchase."Excel File Name");
                         end;
 
+                        //Acess Key NFe
+                        if (StrLen(GetValueAtCell(RowNo, 38)) <= 44) then
+                            Evaluate(IntegrationPurchase."Access Key", GetValueAtCell(RowNo, 38))
+                        else begin
+                            IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Excel Error";
+                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Order",
+                              IntegrationPurchase."document No.", IntegrationPurchase."Line No.", CopyStr(IntegrationPurchase.FieldCaption("Access Key"), 1, 50),
+                              'Maximum 44 characters', GetValueAtCell(RowNo, 38), IntegrationPurchase."Excel File Name");
+                        end;
+                        //SerieNo
+                        if (StrLen(GetValueAtCell(RowNo, 39)) <= 3) then
+                            Evaluate(IntegrationPurchase."Print Serie", GetValueAtCell(RowNo, 39))
+                        else begin
+                            IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Excel Error";
+                            IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Order",
+                              IntegrationPurchase."document No.", IntegrationPurchase."Line No.", CopyStr(IntegrationPurchase.FieldCaption("Print Serie"), 1, 50),
+                              'Maximum 3 characters', GetValueAtCell(RowNo, 39), IntegrationPurchase."Excel File Name");
+                        end;
+
                         //Validação
                         IntPurcOld.Reset();
                         IntPurcOld.SetCurrentKey("Document No.", "Order Date");
@@ -1313,6 +1413,7 @@ codeunit 50002 "Import Excel Buffer"
     var
         IntPurchase: Record "Integration Purchase";
         FTPIntSetup: Record "FTP Integration Setup";
+        RejectionReason: Record "Rejection Reason";
         OutStr: OutStream;
         InSTR: InStream;
         FTPCommunication: codeunit "FTP Communication";
@@ -1387,6 +1488,78 @@ codeunit 50002 "Import Excel Buffer"
 
             until IntPurchase.Next() = 0;
 
+        end;
+
+        IntPurchase.Reset();
+        IntPurchase.SetFilter(Status, '%1', IntPurchase.Status::Cancelled);
+        if IntPurchase.FindSet() then begin
+
+            if Filename = '' then begin
+                Filename := format(FTPIntSetup.Integration::"Purchase Tax Validation") + DelChr(Format(Today, 0, '<Day,2>-<Month,2>-<Year>') + Format(Time, 0, '<Hours24>.<Minutes,2>.<Seconds,2>'), '=', '/:.-');
+
+
+                TempExcelBuffer.NewRow();
+                TempExcelBuffer.AddColumn('Document Type', false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                TempExcelBuffer.AddColumn(IntPurchase.FieldCaption("Document No."), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                TempExcelBuffer.AddColumn('Vendor Id', false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                TempExcelBuffer.AddColumn(IntPurchase.FieldCaption("Order IRRF Ret"), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                TempExcelBuffer.AddColumn(IntPurchase.FieldCaption("Order CSRF Ret"), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                TempExcelBuffer.AddColumn(IntPurchase.FieldCaption("Order INSS Ret"), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                TempExcelBuffer.AddColumn(IntPurchase.FieldCaption("Order ISS Ret"), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                TempExcelBuffer.AddColumn(IntPurchase.FieldCaption("Order PIS Credit"), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                TempExcelBuffer.AddColumn(IntPurchase.FieldCaption("Order Cofins Credit"), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                TempExcelBuffer.AddColumn(IntPurchase.FieldCaption("Order DIRF Ret"), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                TempExcelBuffer.AddColumn(IntPurchase.FieldCaption(Rejected), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                TempExcelBuffer.AddColumn(IntPurchase.FieldCaption(Status), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                TempExcelBuffer.AddColumn(IntPurchase.FieldCaption("Posting Message"), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                TempExcelBuffer.AddColumn(IntPurchase.FieldCaption("Reason Code"), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+
+            end;
+
+            DocumentOld := '999cvgt67vv';
+
+            repeat
+
+                Clear(RejectionReason);
+
+                if DocumentOld <> IntPurchase."Document No." then begin
+                    TempExcelBuffer.NewRow();
+                    TempExcelBuffer.AddColumn('Order', false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                    TempExcelBuffer.AddColumn(IntPurchase."Document No.", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                    TempExcelBuffer.AddColumn(IntPurchase."Buy-from Vendor No.", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                    TempExcelBuffer.AddColumn(IntPurchase."Order IRRF Ret", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
+                    TempExcelBuffer.AddColumn(IntPurchase."Order CSRF Ret", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
+                    TempExcelBuffer.AddColumn(IntPurchase."Order INSS Ret", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
+                    TempExcelBuffer.AddColumn(IntPurchase."Order ISS Ret", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
+                    TempExcelBuffer.AddColumn(IntPurchase."Order PIS Credit", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
+                    TempExcelBuffer.AddColumn(IntPurchase."Order Cofins Credit", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
+                    TempExcelBuffer.AddColumn(IntPurchase."Order DIRF Ret", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
+
+                    if IntPurchase."Rejection Reason" = '' then
+                        TempExcelBuffer.AddColumn('2', false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text)
+                    else begin
+                        TempExcelBuffer.AddColumn('1', false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+
+                        if RejectionReason.get(intPurchase."Rejection Reason") then;
+                    end;
+
+                    TempExcelBuffer.AddColumn(IntPurchase.Status, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                    TempExcelBuffer.AddColumn(IntPurchase."Posting Message", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                    TempExcelBuffer.AddColumn(RejectionReason.Description, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                end;
+
+                IntPurchase.Status := IntPurchase.Status::"Cancelled/Exported";
+                IntPurchase."Exported Excel Purch. Tax Name" := Filename + '.xlsx'; //AMS
+                IntPurchase.Modify();
+
+                DocumentOld := IntPurchase."Document No.";
+
+            until IntPurchase.Next() = 0;
+
+        end;
+
+        if Filename <> '' then begin
+
             TempExcelBuffer.CreateNewBook(IntPurchase.TableCaption);
             TempExcelBuffer.WriteSheet(IntPurchase.TableCaption, CompanyName, UserId);
             TempExcelBuffer.CloseBook();
@@ -1407,7 +1580,9 @@ codeunit 50002 "Import Excel Buffer"
             FTPIntSetup.FindSet();
             FTPCommunication.DoAction(Enum::"FTP Actions"::upload, IntPurchase."Exported Excel Purch. Tax Name", FTPIntSetup.Directory, '', FileBase64);
             Message('Uploaded');
+
         end;
+
     end;
 
     procedure ImportExcelPurchasePost()
@@ -1498,7 +1673,7 @@ codeunit 50002 "Import Excel Buffer"
                 if TempExcelBuffer.FindLast() then
                     MaxCollumn := TempExcelBuffer."Column No.";
 
-                if MaxCollumn <> 3 then begin
+                if MaxCollumn <> 4 then begin
 
                     IntegrationPurchase.Init();
                     IntegrationPurchase."Document No." := DelChr(Format((Today)) + format(Time), '=', ':/');
@@ -1529,13 +1704,17 @@ codeunit 50002 "Import Excel Buffer"
 
                                     if GetValueAtCell(RowNo, 2) = '2' then
                                         IPSaveRejected.Rejected := false
-                                    else
+                                    else begin
                                         IPSaveRejected.Rejected := true;
+                                        IPSaveRejected.Status := IPSaveRejected.Status::Rejected;
+
+                                    end;
 
                                     IPSaveRejected."Release to Post" := not IPSaveRejected.Rejected;
                                     IPSaveRejected."Purch Post Excel File Name" := copystr(Filename, 1, 200);
+                                    IPSaveRejected."Error Descript Perceptive/GP" := GetValueAtCell(RowNo, 3);
 
-                                    if ValidateDate(GetValueAtCell(RowNo, 3)) then
+                                    if ValidateDate(GetValueAtCell(RowNo, 4)) then
                                         IPSaveRejected."Posting Date" := GlobalDateYes;
 
                                     IPSaveRejected.Modify();
@@ -1547,6 +1726,9 @@ codeunit 50002 "Import Excel Buffer"
                                         repeat
                                             PurcHeader."Posting Date" := IPSaveRejected."Posting Date";
                                             PurcHeader.Modify();
+
+                                            if IPSaveRejected."Error Descript Perceptive/GP" <> '' then
+                                                PurcHeader.Delete();
 
                                         until PurcHeader.Next() = 0;
 

@@ -1,11 +1,12 @@
-page 50011 IntSalesCreditNote
+page 50019 IntSalesCreditNotePosted
 {
     PageType = List;
     ApplicationArea = All;
     UsageCategory = Lists;
     SourceTable = IntSalesCreditNote;
-    SourceTableView = sorting("Excel File Name", "No.", "Line No.") where(Status = filter(Imported | Created | "Data Error" | Reviewed | "On Hold" | "Data Excel Error" | "Layout Error" | "Exported" | "Under Analysis"));
-    Caption = 'Integration Sales Credit Memo';
+    SourceTableView = sorting("Excel File Name", "No.", "Line No.") where(Status = filter(Posted | Cancelled));
+    Editable = false;
+    Caption = 'Integration Sales Credit Memo Posted';
 
     layout
     {
@@ -197,59 +198,6 @@ page 50011 IntSalesCreditNote
     {
         area(Processing)
         {
-            action(ImportExcel)
-            {
-                ApplicationArea = All;
-                Caption = 'Import Excel Sales Credit Memo';
-                Image = CreateDocument;
-                ToolTip = 'Import Excel Sales Return Order';
-
-                trigger OnAction();
-                var
-                    ImportExcelBuffer: codeunit "Import Excel Buffer";
-
-                begin
-                    ImportExcelBuffer.ImportExcelSalesReturn();
-
-                    CurrPage.SaveRecord();
-                    CurrPage.Update();
-                    Message('Import Excel Sales Credit Memo');
-                end;
-            }
-            action(CreateCreditOrder)
-            {
-                ApplicationArea = All;
-                Caption = 'Create Credit Memo';
-                Image = CreateDocument;
-                ToolTip = 'Create Return Order';
-
-                trigger OnAction();
-                var
-                    IntSalesCred: Record IntSalesCreditNote;
-                begin
-                    currPage.SetSelectionFilter(IntSalesCred);
-                    IntSalesCred.CopyFilters(Rec);
-                    IntSalesCreditNote.CreateSalesCredit(IntSalesCred);
-                    Message('Create Credit Memo');
-                end;
-            }
-            action(PostOrder)
-            {
-                ApplicationArea = All;
-                Caption = 'Post Credit Memo';
-                Image = PostDocument;
-                ToolTip = 'Post Return Order';
-
-                trigger OnAction();
-                var
-                    IntSalesCred: Record IntSalesCreditNote;
-                begin
-                    currPage.SetSelectionFilter(IntSalesCred);
-                    IntSalesCred.CopyFilters(Rec);
-                    IntSalesCreditNote.PostSalesCredit(IntSalesCred);
-                    Message('Post Credit Memo');
-                end;
-            }
             action(SalesOrder)
             {
                 ApplicationArea = All;
@@ -259,10 +207,10 @@ page 50011 IntSalesCreditNote
 
                 trigger OnAction();
                 var
-                    SalesHeader: Record "Sales Header";
+                    SalesCrMemoHeader: Record "Sales Cr.Memo Header";
                 begin
-                    if SalesHeader.get(SalesHeader."Document Type"::"Return Order", rec."No.") then
-                        PAGE.Run(PAGE::"Sales Return Order", SalesHeader);
+                    if SalesCrMemoHeader.get(rec."No.") then
+                        PAGE.Run(PAGE::"Posted Sales Credit Memo", SalesCrMemoHeader);
                 end;
             }
             action(Customer)
@@ -295,29 +243,8 @@ page 50011 IntSalesCreditNote
                     PAGE.Run(PAGE::"Item Card", Item);
                 end;
             }
-            action(DeleteEntries)
-            {
-                ApplicationArea = All;
-                Caption = 'Delete Entries';
-                Image = PostDocument;
-                ToolTip = 'Delete Entries';
-
-                trigger OnAction();
-                var
-                    IntAc: Record IntSalesCreditNote;
-                begin
-                    CurrPage.SetSelectionFilter(IntAc);
-                    IntAc.CopyFilters(Rec);
-                    IntAc.DeleteAll(true);
-                    CurrPage.Update();
-
-                end;
-            }
-
 
         }
     }
-    var
-        IntSalesCreditNote: Codeunit IntSalesCreditNote;
 
 }

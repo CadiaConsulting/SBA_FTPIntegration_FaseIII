@@ -42,6 +42,8 @@ report 50000 "General Ledger Complete"
                     field(BranchCode; BranchCode)
                     {
                         Caption = 'Branch Code';
+                        ApplicationArea = All;
+
                         TableRelation = "CADBR Branch Information";
                         trigger OnValidate()
                         begin
@@ -53,6 +55,8 @@ report 50000 "General Ledger Complete"
                     field(StartDate; StartDate)
                     {
                         Caption = 'Start Date';
+                        ApplicationArea = All;
+
                         trigger OnValidate()
                         begin
                             if BranchCode = '' then
@@ -64,6 +68,8 @@ report 50000 "General Ledger Complete"
                     field(EndDate; EndDate)
                     {
                         Caption = 'End Date';
+                        ApplicationArea = All;
+
                         trigger OnValidate()
                         begin
                             if BranchCode = '' then

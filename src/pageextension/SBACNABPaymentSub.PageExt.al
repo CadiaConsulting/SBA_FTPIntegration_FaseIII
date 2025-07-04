@@ -2,6 +2,11 @@ pageextension 50035 "SBA CNAB Payment Subform" extends "CADBR CNAB Payment Subfo
 {
     layout
     {
+        modify(ShortcutDim5)
+        {
+            Visible = true;
+        }
+
         addafter(PaymentMethodCode)
         {
             field("Documents Applies"; rec."Documents Applies")

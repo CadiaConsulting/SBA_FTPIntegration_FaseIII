@@ -155,7 +155,7 @@ table 50011 "IntSalesCreditNote"
             Caption = 'Error Order';
             FieldClass = FlowField;
             CalcFormula = count(IntSalesCreditNote where("No." = field("No."),
-                                                            "Status" = filter(2)));
+                                                            "Status" = filter(2 | 6)));
         }
         field(110; "Errors Import Excel"; Integer)
         {
@@ -177,36 +177,25 @@ table 50011 "IntSalesCreditNote"
 
     keys
     {
-        key("Key1"; "No.", "Line No.")
+        key("Key1"; "Excel File Name", "No.", "Line No.")
         {
             Clustered = true;
-        }
-        key("Key2"; "Excel File Name", "No.", "Line No.")
-        {
-
         }
     }
 
     var
 
-
-    trigger OnInsert()
-    begin
-
-    end;
-
-    trigger OnModify()
-    begin
-
-    end;
-
     trigger OnDelete()
+    var
+        IntegErros: Record IntegrationErros;
     begin
 
-    end;
-
-    trigger OnRename()
-    begin
+        IntegErros.Reset();
+        IntegErros.SetRange("Integration Type", IntegErros."Integration Type"::"Sales Return Order");
+        IntegErros.SetRange("Excel File Name", rec."Excel File Name");
+        IntegErros.SetRange("Line No.", Rec."Line No.");
+        if IntegErros.FindSet() then
+            IntegErros.DeleteAll();
 
     end;
 

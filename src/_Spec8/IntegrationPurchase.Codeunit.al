@@ -153,6 +153,7 @@ codeunit 50013 "Integration Purchase"
         PurchaseLine: Record "Purchase Line";
         IntPurStatus: Record "Integration Purchase";
         DocAttac: Record "Document Attachment";
+        openDocNFeKey: Record "CADBR Open Document NFe Key";
         TempBlob: Codeunit "Temp Blob";
         CADBRMunicipio: Record "CADBR Municipio";
         IPLines: Record "Integration Purchase";
@@ -193,6 +194,19 @@ codeunit 50013 "Integration Purchase"
             PurchaseHeader."Cofins Credit" += IntegrationPurchase."Cofins Credit";
             PurchaseHeader."DIRF" += IntegrationPurchase.DIRF;
             PurchaseHeader."PO Total" := IntegrationPurchase."PO Total";
+
+            openDocNFeKey.Init;
+            openDocNFeKey.Type := openDocNFeKey.Type::Purch;
+            openDocNFeKey."Document Type" := PurchaseHeader."Document Type";
+            openDocNFeKey."Document No." := PurchaseHeader."No.";
+            if not openDocNFeKey.Find then
+                openDocNFeKey.Insert;
+            openDocNFeKey."Access Key" := IntegrationPurchase."Access Key";
+            openDocNFeKey.Modify;
+
+
+            PurchaseHeader."CADBR Print Serie" := IntegrationPurchase."Print Serie";
+
             PurchaseHeader.Insert();
 
             PurchaseHeader.AddLink(IntegrationPurchase."Doc. URL", IntegrationPurchase."Doc. URL");

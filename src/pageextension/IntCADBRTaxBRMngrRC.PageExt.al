@@ -40,6 +40,12 @@ pageextension 50021 "IntCADBRTaxBRMngrRC" extends "CADBR Tax BR Manager RC"
                             ApplicationArea = all;
                             RunObject = page IntSalesCreditNote;
                         }
+                        action(SalesCredMemoIntPosted)
+                        {
+                            Caption = 'Integration Sales Credit Memo Posted';
+                            ApplicationArea = all;
+                            RunObject = page IntSalesCreditNotePosted;
+                        }
                     }
                     group(CashReceiptInt)
                     {

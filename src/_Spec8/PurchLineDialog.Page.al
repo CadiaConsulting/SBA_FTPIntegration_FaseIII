@@ -23,12 +23,23 @@ page 50028 "Purch Line Dialog"
                 Editable = true;
             }
 
+            field(ServiceCode; ServiceCode)
+            {
+                ApplicationArea = All;
+                Caption = 'Service Code';
+                ToolTip = 'Service Code';
+                TableRelation = "CADBR NFS Service Code";
+                Editable = true;
+            }
+
         }
     }
 
     var
         DocumentNo: Code[20];
         NCMCode: Code[20];
+        ServiceCode: Code[20];
+
 
     procedure SetDocumentInfo(NewDocumentNo: Code[20])
     begin
@@ -45,8 +56,12 @@ page 50028 "Purch Line Dialog"
         PurchLine.SetRange("Document Type", PurchLine."Document Type"::Order);
         if PurchLine.FindSet() then
             repeat
+                if NCMCode <> '' then
+                    PurchLine.Validate("CADBR NCM Code", NCMCode);
 
-                PurchLine.Validate("CADBR NCM Code", NCMCode);
+                if ServiceCode <> '' then
+                    PurchLine.Validate("CADBR Service Code", ServiceCode);
+
                 PurchLine.Modify();
 
             until PurchLine.Next() = 0;

@@ -40,6 +40,12 @@ pageextension 50020 "INTRBusinessMngrRoleCenter" extends "Business Manager Role 
                             ApplicationArea = all;
                             RunObject = page IntSalesCreditNote;
                         }
+                        action(SalesCredMemoIntPosted)
+                        {
+                            Caption = 'Integration Sales Credit Memo Posted';
+                            ApplicationArea = all;
+                            RunObject = page IntSalesCreditNotePosted;
+                        }
                     }
                     group(CashReceiptInt)
                     {

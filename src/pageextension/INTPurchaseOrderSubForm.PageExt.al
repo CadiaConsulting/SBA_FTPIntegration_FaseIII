@@ -564,56 +564,18 @@ pageextension 50026 INTPurchaseOrderSubForm extends "Purchase Order Subform"
         {
             action(UpdateLineNCM)
             {
-                Caption = 'Update NCM Code';
+                Caption = 'Update Lines';
                 ApplicationArea = Basic, Suite;
                 Image = ViewOrder;
-                ToolTip = 'Update NCM Code';
+                ToolTip = 'Update Lines';
 
                 trigger OnAction()
                 var
-                    PurcLine: Record "Purchase Line";
-                    PurchaseHeader: Record "Purchase Header";
-                    FiscalDoc: Record "CADBR Fiscal Document Type";
-                    CSTImpostos: Record "CADBR CST Impostos";
                     PurcLineDialog: Page "Purch Line Dialog";
-                    errorNCMCode: Boolean;
                 begin
-
-                    PurcLine.Reset();
-                    PurcLine.SetRange("Document Type", rec."Document Type");
-                    PurcLine.SetRange("Document No.", rec."Document No.");
-                    PurcLine.SetFilter(Type, '<>%1', PurcLine.Type::" ");
-                    if PurcLine.FindSet() then begin
-
-                        PurchaseHeader.GET(rec."Document Type", rec."Document No.");
-
-                        repeat
-
-                            if (PurchaseHeader."CADBR Fiscal Document Type" <> '') and (FiscalDoc.Get(PurchaseHeader."CADBR Fiscal Document Type")) and
-                                        (FiscalDoc."Document Model" = '55') then begin
-
-                                if CSTImpostos.get(CSTImpostos."Tax Type"::PIS, PurcLine."CADBR PIS CST Code") then
-                                    if CSTImpostos."Tax Credit" then
-                                        if PurcLine."CADBR NCM Code" = '' then
-                                            errorNCMCode := true;
-
-                                if CSTImpostos.get(CSTImpostos."Tax Type"::COFINS, PurcLine."CADBR COFINS CST Code") then
-                                    if CSTImpostos."Tax Credit" then
-                                        if PurcLine."CADBR NCM Code" = '' then
-                                            errorNCMCode := true;
-
-                            end;
-                        until PurcLine.Next() = 0;
-
-                        if errorNCMCode then begin
-                            PurcLineDialog.SetDocumentInfo(Rec."Document No.");
-                            if PurcLineDialog.RunModal() = Action::OK then
-                                PurcLineDialog.SetNCMCode();
-                        end;
-
-                    end;
-
-
+                    PurcLineDialog.SetDocumentInfo(Rec."Document No.");
+                    if PurcLineDialog.RunModal() = Action::OK then
+                        PurcLineDialog.SetNCMCode();
                 end;
             }
         }

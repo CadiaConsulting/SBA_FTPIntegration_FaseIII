@@ -296,6 +296,25 @@ table 50013 "Integration Purchase"
         {
             Caption = 'Tax % Order DIRF Ret';
         }
+        field(300; "Print Serie"; Code[4])
+        {
+            Caption = 'Print Serie';
+        }
+        field(301; "Access Key"; Text[250])
+        {
+            Caption = 'Access Key';
+        }
+        field(310; "Rejection Reason"; code[10])
+        {
+            Caption = 'Rejection Reason';
+            TableRelation = "Rejection Reason";
+        }
+
+        field(320; "Error Descript Perceptive/GP"; Text[150])
+        {
+            Caption = 'Error Descript Perceptive/GP';
+
+        }
 
 
     }

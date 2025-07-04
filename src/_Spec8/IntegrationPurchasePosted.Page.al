@@ -6,7 +6,7 @@ page 50014 "Integration Purchase Posted"
     ApplicationArea = All;
     RefreshOnActivate = true;
     SourceTable = "Integration Purchase";
-    SourceTableView = where(Status = filter(Posted | Cancelled));
+    SourceTableView = where(Status = filter(Posted | Cancelled | "Cancelled/Exported" | Rejected));
     UsageCategory = Lists;
 
     layout
@@ -260,6 +260,22 @@ page 50014 "Integration Purchase Posted"
                     ApplicationArea = All;
                     ToolTip = 'Fiscal Document Type';
                 }
+                field("Service Code"; Rec."Service Code")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Service Code';
+                }
+
+                field("Access Key"; rec."Access Key")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Access Key';
+                }
+                field("Print Serie"; rec."Print Serie")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Print Serie';
+                }
 
                 field(Rejected; Rec.Rejected)
                 {
@@ -270,6 +286,11 @@ page 50014 "Integration Purchase Posted"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Posting Message';
+                }
+                field("Rejection Reason"; rec."Rejection Reason")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Rejection Reason';
                 }
                 field("Error Order"; Rec."Error Order")
                 {
@@ -296,6 +317,11 @@ page 50014 "Integration Purchase Posted"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Exported Excel Purch. Tax Name';
+                }
+                field("Error Descript Perceptive/GP"; rec."Error Descript Perceptive/GP")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Error Descript Perceptive/GP';
                 }
             }
         }

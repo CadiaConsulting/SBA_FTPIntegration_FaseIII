@@ -863,6 +863,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table Integration Purchase - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Table 2300234719 - Field 398659549 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Access Key</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table Integration Purchase - Field Access Key - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Table 2300234719 - Field 1990467305 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Additional Description</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -912,6 +917,11 @@
           <source>Document No.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table Integration Purchase - Field Document No. - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 2300234719 - Field 652340563 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Error Descript Perceptive/GP</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table Integration Purchase - Field Error Descript Perceptive/GP - Property Caption</note>
         </trans-unit>
         <trans-unit id="Table 2300234719 - Field 1796387818 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Error Order</source>
@@ -1048,6 +1058,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table Integration Purchase - Field Posting Message - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Table 2300234719 - Field 183076235 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Print Serie</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table Integration Purchase - Field Print Serie - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Table 2300234719 - Field 2842546430 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Purch Post Excel File Name</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -1072,6 +1087,11 @@
           <source>Rejected</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table Integration Purchase - Field Rejected - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 2300234719 - Field 128273549 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rejection Reason</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table Integration Purchase - Field Rejection Reason - Property Caption</note>
         </trans-unit>
         <trans-unit id="Table 2300234719 - Field 1501764046 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Release to Post</source>
@@ -3403,6 +3423,21 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table IntSalesCreditNote - Field Your Reference - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Table 128273549 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rejection Reason</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table Rejection Reason - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 128273549 - Field 3004954119 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Code</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table Rejection Reason - Field Code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 128273549 - Field 3461834954 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Description</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table Rejection Reason - Field Description - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Table 4043474446 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Status Files Validation</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -3427,6 +3462,11 @@
           <source>Status</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table Status Files Validation - Field Status - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3625489113 - Method 2503265217 - NamedType 4286633867" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The US GAAP column was not filled in. Please provide the US Accounting Account (US GAAP) for Process Sequence.</source>
+          <note from="Developer" annotates="general" priority="2">%1 - Item No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Codeunits Events - Method Codeunit_52007100_OnAfterManualReleasePurchaseDoc - NamedType Dime01Err</note>
         </trans-unit>
         <trans-unit id="Codeunit 3625489113 - Method 376541200 - NamedType 1758949055" size-unit="char" translate="yes" xml:space="preserve">
           <source>Document No. %1 já existe para o Fornecedor %2.</source>
@@ -5933,6 +5973,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Page 2300234719 - Control 398659549 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Access Key</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Control Access Key - Property ToolTip</note>
+        </trans-unit>
         <trans-unit id="Page 2300234719 - Control 1990467305 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Additional Description</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -5982,6 +6027,11 @@
           <source>Document No.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Control Document No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2300234719 - Control 652340563 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Error Descript Perceptive/GP</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Control Error Descript Perceptive/GP - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="Page 2300234719 - Control 1796387818 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Error Order</source>
@@ -6113,6 +6163,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Control Posting Message - Property ToolTip</note>
         </trans-unit>
+        <trans-unit id="Page 2300234719 - Control 183076235 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Print Serie</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Control Print Serie - Property ToolTip</note>
+        </trans-unit>
         <trans-unit id="Page 2300234719 - Control 2842546430 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Purch Post Excel File Name</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -6132,6 +6187,11 @@
           <source>Rejected</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Control Rejected - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2300234719 - Control 128273549 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rejection Reason</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Control Rejection Reason - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="Page 2300234719 - Control 1501764046 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Release to Post</source>
@@ -6383,6 +6443,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase Posted - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Page 770492064 - Control 398659549 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Access Key</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase Posted - Control Access Key - Property ToolTip</note>
+        </trans-unit>
         <trans-unit id="Page 770492064 - Control 1990467305 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Additional Description</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -6427,6 +6492,11 @@
           <source>Document No.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase Posted - Control Document No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 770492064 - Control 652340563 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Error Descript Perceptive/GP</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase Posted - Control Error Descript Perceptive/GP - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="Page 770492064 - Control 1796387818 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Error Order</source>
@@ -6553,6 +6623,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase Posted - Control Posting Message - Property ToolTip</note>
         </trans-unit>
+        <trans-unit id="Page 770492064 - Control 183076235 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Print Serie</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase Posted - Control Print Serie - Property ToolTip</note>
+        </trans-unit>
         <trans-unit id="Page 770492064 - Control 2842546430 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Purch Post Excel File Name</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -6567,6 +6642,16 @@
           <source>Rejected</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase Posted - Control Rejected - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 770492064 - Control 128273549 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rejection Reason</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase Posted - Control Rejection Reason - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 770492064 - Control 2205837876 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Service Code</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase Posted - Control Service Code - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="Page 770492064 - Control 1577567912 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Shortcut Dimension 1 Code</source>
@@ -10603,6 +10688,16 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Purch Line Dialog - Control NCMCode - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Page 3137952790 - Control 4230426132 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Service Code</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Purch Line Dialog - Control ServiceCode - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3137952790 - Control 4230426132 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Service Code</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Purch Line Dialog - Control ServiceCode - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Page 3304466226 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>PurchLineEdit</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -10667,6 +10762,36 @@
           <source>Update Data</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page PurchLineEdit - Action UpdateData - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 1408445909 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rejection Reason Dialog</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Rejection Reason Dialog - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 1408445909 - Control 850164226 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rejection Reason</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Rejection Reason Dialog - Control RejectionReasonCode - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 1408445909 - Control 850164226 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rejection Reason</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Rejection Reason Dialog - Control RejectionReasonCode - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2781667235 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rejection Reason</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Rejection Reason List - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2781667235 - Control 3004954119 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Code field.</source>
+          <note from="Developer" annotates="general" priority="2">%</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Rejection Reason List - Control Code - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2781667235 - Control 3461834954 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Description field.</source>
+          <note from="Developer" annotates="general" priority="2">%</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Rejection Reason List - Control Description - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="Page 3280975866 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>VAT Entry Update</source>
@@ -11064,7 +11189,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseInvoiceSubForm - Action UpdateLIne - Property Caption</note>
         </trans-unit>
         <trans-unit id="PageExtension 3981024632 - Action 3327007977 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3195034673">
-          <source>Delete Records</source>
+          <source>Delete/Cancel</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Action DeleteRecords - Property Caption</note>
         </trans-unit>
@@ -11154,12 +11279,12 @@
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Control Vendor Invoice No. - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="PageExtension 312826912 - Action 1607644801 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 526152577">
-          <source>Update NCM Code</source>
+          <source>Update Lines</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderSubForm - Action UpdateLineNCM - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="PageExtension 312826912 - Action 1607644801 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 526152577">
-          <source>Update NCM Code</source>
+          <source>Update Lines</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderSubForm - Action UpdateLineNCM - Property Caption</note>
         </trans-unit>
@@ -12078,6 +12203,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Enum Integration Import Status - EnumValue Cancelled - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Enum 863328713 - EnumValue 4189602411 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Cancelled/Exported</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Enum Integration Import Status - EnumValue Cancelled/Exported - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Enum 863328713 - EnumValue 1249475212 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Created</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -12122,6 +12252,11 @@
           <source>Posted</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Enum Integration Import Status - EnumValue Posted - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Enum 863328713 - EnumValue 496445946 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rejected</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Enum Integration Import Status - EnumValue Rejected - Property Caption</note>
         </trans-unit>
         <trans-unit id="Enum 863328713 - EnumValue 3732000533 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Reviewed</source>

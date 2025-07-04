@@ -10286,7 +10286,7 @@
         </trans-unit>
         <trans-unit id="Codeunit 1853925422 - Method 4049767876 - NamedType 3631401444" size-unit="char" translate="yes" xml:space="preserve">
           <source>Sales Credit Order and Line with Document No. %1 already imported to File %2.</source>
-          <target>Nota de Crédito com linha com Nº do documento %1 Duplicado no Arquivo %2.</target>
+          <target>Nota de Crédito com linha e Nº do documento %1 Duplicado no Arquivo %2.</target>
           <note from="Developer" annotates="general" priority="2">%1 - Document No.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Import Excel Buffer - Method ImportExcelSalesReturn - NamedType DocOld02Err</note>
         </trans-unit>
@@ -10451,6 +10451,88 @@
           <target>Atualizar NCM Code</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderSubForm - Action UpdateLineNCM - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3981024632 - Action 3327007977 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3195034673">
+          <source>Delete/Cancel</source>
+          <target>Excluir/Cancelar</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Action DeleteRecords - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 2300234719 - Field 128273549 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rejection Reason</source>
+          <target>Motivo de Rejeição</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table Integration Purchase - Field Rejection Reason - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 128273549 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rejection Reason</source>
+          <target>Motivo de Rejeição</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table Rejection Reason - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 128273549 - Field 3004954119 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Code</source>
+          <target>Codigo</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table Rejection Reason - Field Code - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 128273549 - Field 3461834954 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Description</source>
+          <target>Descricao</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table Rejection Reason - Field Description - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2300234719 - Control 128273549 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rejection Reason</source>
+          <target>Motivo de Rejeição</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Control Rejection Reason - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 770492064 - Control 128273549 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rejection Reason</source>
+          <target>Motivo de Rejeição</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase Posted - Control Rejection Reason - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 1408445909 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rejection Reason Dialog</source>
+          <target>Motivo de Rejeição</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Rejection Reason Dialog - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 1408445909 - Control 850164226 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rejection Reason</source>
+          <target>Motivo de Rejeição</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Rejection Reason Dialog - Control RejectionReasonCode - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 1408445909 - Control 850164226 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rejection Reason</source>
+          <target>Motivo de Rejeição</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Rejection Reason Dialog - Control RejectionReasonCode - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2781667235 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Rejection Reason</source>
+          <target>Motivo de Rejeição</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Rejection Reason List - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2781667235 - Control 3004954119 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Code field.</source>
+          <note from="Developer" annotates="general" priority="2">%</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Rejection Reason List - Control Code - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2781667235 - Control 3461834954 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Description field.</source>
+          <note from="Developer" annotates="general" priority="2">%</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Rejection Reason List - Control Description - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3625489113 - Method 2503265217 - NamedType 4286633867" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The US GAAP column was not filled in. Please provide the US Accounting Account (US GAAP) for Process Sequence.</source>
+          <target>A coluna US GAAP não foi preenchida. Favor informar a Conta Contábil US (US GAAP) para Sequência do Processo.</target>
+          <note from="Developer" annotates="general" priority="2">%1 - Item No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Codeunits Events - Method Codeunit_52007100_OnAfterManualReleasePurchaseDoc - NamedType Dime01Err</note>
         </trans-unit>
       </group>
     </body>

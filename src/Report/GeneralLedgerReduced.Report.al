@@ -14,12 +14,16 @@ report 50001 "General Ledger Reduced"
             begin
                 if BranchCode = '' then
                     error(ErrorTextBranc);
+
                 if StartDate = 0D then
                     error(ErrorTextStart);
+
                 if StartDate > EndDate then
                     error(ErrorTextStart);
+
                 if EndDate = 0D then
                     error(ErrorTextEnd);
+
                 if EndDate < StartDate then
                     error(ErrorTextEnd);
 
@@ -42,6 +46,8 @@ report 50001 "General Ledger Reduced"
                     field(BranchCode; BranchCode)
                     {
                         Caption = 'Branch Code';
+                        ApplicationArea = All;
+
                         TableRelation = "CADBR Branch Information";
                         trigger OnValidate()
                         begin
@@ -53,6 +59,8 @@ report 50001 "General Ledger Reduced"
                     field(StartDate; StartDate)
                     {
                         Caption = 'Start Date';
+                        ApplicationArea = All;
+
                         trigger OnValidate()
                         begin
                             if BranchCode = '' then
@@ -64,6 +72,8 @@ report 50001 "General Ledger Reduced"
                     field(EndDate; EndDate)
                     {
                         Caption = 'End Date';
+                        ApplicationArea = All;
+
                         trigger OnValidate()
                         begin
                             if BranchCode = '' then

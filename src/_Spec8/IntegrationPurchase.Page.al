@@ -289,10 +289,28 @@ page 50013 "Integration Purchase"
                     ApplicationArea = All;
                     ToolTip = 'Service Code';
                 }
+                field("Access Key"; rec."Access Key")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Access Key';
+                }
+                field("Print Serie"; rec."Print Serie")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Print Serie';
+                }
+
+
                 field("Posting Message"; rec."Posting Message")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Posting Message';
+                }
+
+                field("Rejection Reason"; rec."Rejection Reason")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Rejection Reason';
                 }
                 field("Error Order"; rec."Error Order")
                 {
@@ -324,6 +342,11 @@ page 50013 "Integration Purchase"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Exported Excel Purch. Tax Name';
+                }
+                field("Error Descript Perceptive/GP"; rec."Error Descript Perceptive/GP")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Error Descript Perceptive/GP';
                 }
             }
         }
